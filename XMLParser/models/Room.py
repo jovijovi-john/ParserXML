@@ -8,14 +8,17 @@ class Room:
       try: 
         # se já existe valor no atributo
         value = getattr(self, tag)
-        setattr(self, tag, [value, att])
- 
-       
+
+        if (not isinstance(value, list)):
+          setattr(self, tag, [value, att])
+        else:
+          value.append(att)
+          
       except(AttributeError):
         # não existe valor no atributo
         setattr(self, tag, att)
 
-      
-    
+    print(self.item)
+    print(self.border)
       
     

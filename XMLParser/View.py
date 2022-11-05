@@ -23,8 +23,7 @@ class View:
 
       Ou seja, se passar um indice diferente de -1, o nameRoom não importa.
     """
-
-    os.system("cls") # clear terminal
+    os.system('cls||clear')
 
     if (index != -1): # buscar por índice
       nameRoom = self.getRoomByIndex(index)
@@ -36,6 +35,9 @@ class View:
     print("Você está na sala " + room.name.text)
     print(f"\033[1;32m{'*=*=' * 20}\033[m \n")
     
+    print("\n\n")
+    print("\n\n")
+
     print(room.description.text)
 
     self.showMenuOptions(room)
@@ -74,3 +76,6 @@ class View:
     option = int(input(": "))
     if option == 0:
       self.viewDirections(room)
+
+
+

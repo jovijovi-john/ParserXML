@@ -12,4 +12,3 @@ for room in root:
   rooms.append(sala)
 
 view = View(rooms)
-

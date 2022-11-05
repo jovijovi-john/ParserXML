@@ -1,4 +1,4 @@
-<?xml version = "1.0" encoding = "utf-8"?>
+<?xml version = "1.0" encoding = "UTF-8"?>
 <map>
  <room>
    <name>Entrada</name>
@@ -22,8 +22,8 @@
      <print>* tropeçar * preciso de alguma luz ...</print>
    </trigger>
    <border>
-     <direction>norte</direction>
      <name>Hangar Principal</name>
+     <direction>norte</direction>
    </border>
  </room>
  <room>
@@ -49,13 +49,13 @@
        <condition>
          <has>sim</has>
          <object>chave</object>
-         <owner>lock</owner>
+         <owner>inventário</owner>
        </condition>
        <print>A fechadura cai e a porta se abre</print>
        <action>Atualizar bloqueio para desbloqueado</action>
      </trigger>
      <trigger>
-       <command>n</command>
+       <command>norte</command>
        <type>permanente</type>
        <condition>
          <status>bloqueado</status>
@@ -69,7 +69,7 @@
      <attack>
        <condition>
          <object>sabre de luz</object>
-         <status>aceso</status>
+         <status>ativado</status>
        </condition>
        <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
        <action>Adicionar chave ao hangar principal</action>
@@ -79,7 +79,7 @@
        <type>único</type>
        <condition>
          <object>lanterna</object>
-         <status>aceso</status>
+         <status>ativado</status>
          <owner>inventário</owner>
        </condition>
        <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
@@ -89,12 +89,12 @@
      </item>
    </creature>
    <border>
-     <direction>sul</direction>
      <name>Entrada</name>
+     <direction>sul</direction>
    </border>
    <border>
-     <direction>norte</direction>
      <name>Sala do gerador</name>
+     <direction>norte</direction>
    </border>
  </room>
  <room>
@@ -129,7 +129,7 @@
        <condition>
          <has>sim</has>
          <object>jammer</object>
-         <owner>generator</owner>
+         <owner>inventário</owner>
        </condition>
        <print>O gerador foi desativado com sucesso!</print>
        <action>Atualizar gerador para desligado</action>
@@ -174,7 +174,7 @@
    </creature>
    <trigger>
          <type>permanente</type>
-         <command>n</command>
+         <command>norte</command>
          <condition>
            <has>não</has>
            <object>escada</object>
@@ -212,7 +212,7 @@
        <attack>
          <condition>
            <object>sabre de luz</object>
-           <status>aceso</status>
+           <status>ativado</status>
          </condition>
          <print>Você matou Tarkin! Ele deixou cair um cartão que permite que você prossiga para o norte.</print>
          <action>Adicionar cartão à sala de conferências</action>
@@ -221,7 +221,7 @@
        <trigger>
          <type>único</type>
          <condition>
-           <status>aceso</status>
+           <status>ativado</status>
            <object>sabre de luz</object>
            <owner>inventário</owner>
          </condition>
@@ -239,15 +239,15 @@
            <type>único</type>
            <condition>
              <has>sim</has>
-             <object>leitor de cartões</object>
-             <owner>cartão</owner>
+             <object>cartão</object>
+             <owner>leitor de cartões</owner>
            </condition>
            <print>O leitor de cartões tem o cartão agora, você pode continuar!</print>
            <action>Atualizar leitor de cartão para abrir</action>
        </trigger>
      </container>
      <trigger>
-       <command>w</command>
+       <command>norte</command>
        <type>permanente</type>
        <condition>
          <status>fechado</status>
@@ -338,7 +338,7 @@
      <attack>
          <condition>
            <object>sabre de luz</object>
-           <status>aceso</status>
+           <status>ativado</status>
          </condition>
          <print>Você matou o Imperador. Ele deixou cair uma chave com a qual você pode escapar da Estrela da Morte em uma cápsula de fuga!</print>
          <action>Excluir imperador</action>
@@ -346,7 +346,7 @@
      <trigger>
          <type>único</type>
          <condition>
-           <status>aceso</status>
+           <status>ativado</status>
            <object>sabre de luz</object>
            <owner>inventário</owner>
          </condition>
@@ -371,7 +371,7 @@
            <action>Atualizar escape para abrir</action>
      </trigger>
      <trigger>
-       <command>n</command>
+       <command>norte</command>
        <type>permanente</type>
        <condition>
          <status>fechado</status>
