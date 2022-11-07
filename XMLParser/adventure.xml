@@ -10,7 +10,14 @@
        <print>A lanterna foi ligada</print>
        <action>Atualizar lanterna para acesa</action>
      </turnon>
-   </item>
+   </item> 
+   <item>
+     <name>Tesoura</name>
+     <turnon>
+       <print>A lanterna foi ligada</print>
+       <action>Atualizar lanterna para acesa</action>
+     </turnon>
+   </item>  
    <trigger>
      <type>permanente</type>
      <command>norte</command>
@@ -29,6 +36,14 @@
  <room>
    <name>Hangar Principal</name>
    <description>Você está no meio do hangar principal da Estrela da Morte. Há uma porta trancada ao norte. Você vê um baú no meio da sala.</description>
+  <item>
+     <name>lanterna</name>
+     <writing>ao lado de um pequeno botão diz "liga para luz!"</writing>
+     <turnon>
+       <print>A lanterna foi ligada</print>
+       <action>Atualizar lanterna para acesa</action>
+     </turnon>
+   </item>  
    <container>
      <name>baú</name>
      <item>
@@ -159,6 +174,7 @@
          <action>Adicionar escada ao TrashCompactor</action>
          <action>Excluir dianoga</action>
        </attack>
+       
        <trigger>
          <type>único</type>
          <condition>

@@ -9,6 +9,7 @@ class Room:
         # se já existe valor no atributo
         value = getattr(self, tag)
 
+        # se não é uma lista
         if (not isinstance(value, list)):
           setattr(self, tag, [value, att])
         else:
@@ -18,7 +19,4 @@ class Room:
         # não existe valor no atributo
         setattr(self, tag, att)
 
-    print(self.item)
-    print(self.border)
-      
     

@@ -1,7 +1,7 @@
 from models.Border import Border
 from models.Room  import Room
 from models.Container  import Container
-from models.Item  import Item
+from models.Item import Item
 
 class Controller:
 
@@ -18,14 +18,11 @@ class Controller:
     map_rooms = {}
 
     for room in rooms:
-      print(room.item)
       
-      print("\n")
-      for item in room.item:
-        print(f"primeiro item: {item}")
       self.createBordersObj(room)
-      
-
+      self.createItemsObject(room)
+      self.createContainersObj(room)
+    
       # Atualizando a sala com as novas informações
       map_rooms[room.name.text] = room
     return map_rooms
@@ -46,6 +43,12 @@ class Controller:
     return list_keys
 
   def createBordersObj(self, room):
+    """
+      Recebe uma room e transforma todas suas borders em objetos Border
+
+      :param Room room : Sala que terá as borders trasnformadas em objetos
+    """
+
     # Verificando se o objeto border da Sala contém mais de uma borda
     if (str(type(room.border)) == "<class 'list'>"):
       borders = room.border #array
@@ -63,6 +66,11 @@ class Controller:
       room.border = border_obj
 
   def createContainersObj(self, room):
+    """
+      Recebe uma room e transforma todos seus containers em objetos Container
+
+      :param Room room : Sala que terá os containers trasnformados em objetos
+    """
 
     self.hasContainer(room)
 
@@ -85,6 +93,11 @@ class Controller:
         room.container = container_obj
 
   def hasItem(self, obj):
+    """
+      Recebe um objeto e adiciona na propriedade hasItem um bool
+
+      :param   (Room | Container)   obj  :  Local que será verificado se tem item
+    """
     try:
       item = obj.item
       obj.hasItem = True
@@ -93,7 +106,6 @@ class Controller:
   
   def createItemsObject(self, obj):
 
-    print(f"O item é {obj.item}")
     self.hasItem(obj)
 
     if (obj.hasItem):        
@@ -103,7 +115,6 @@ class Controller:
         items_obj = []
 
         for item in items:
-          print(item)
           item_obj = Item(item)
           items_obj.append(item_obj)
         
@@ -112,10 +123,55 @@ class Controller:
         item_obj = Item(obj.item)
         obj.item = item_obj
 
-
   def hasContainer(self, room):
+    """
+      Recebe uma room e adiciona na propriedade hasContainer um bool
+
+      :param   Room   room  :  Sala que será verificada
+    """
     try:
       container = room.container
       room.hasContainer = True
     except AttributeError:
       room.hasContainer = False
+
+  
+  def findItem(self, obj, index):
+    """
+      Retorna um item de um objeto a partir de um index
+
+      :param (Room | Container)   obj   : Local de onde será buscado o item 
+      :param int                  index : index do item no obj
+    """
+    item = obj.item
+
+    if (isinstance(item, list)):
+      return item[index]
+    else:
+      return item
+
+  def catchItem(self, obj, index_item, item, player):
+    """
+      Pega um item de uma sala ou de um container, remove ele de onde ele estava e coloca no inventário do usuário
+
+      :param  (Room | Container) obj         :  Local de onde será retirado o item 
+      :param  int                index_item  :  Index do item no obj
+      :param  Item               item        :  item que irá para o inventário 
+      :param  Player             player      :  player que receberá o item
+    """
+    try:
+      items = obj.item
+      player.addItem(item)
+
+      if (isinstance(items, list)):
+        items.pop(index_item)
+        if (len(items) == 0):
+          obj.hasItem = False
+
+      else:
+        items = []
+        obj.hasItem = False
+
+    except:
+      print("NÃO EXISTE ITEM NO OBJETO")
+
