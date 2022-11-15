@@ -149,6 +149,15 @@ class Controller:
       return item[index]
     else:
       return item
+  
+  def findContainer(self, room, index):
+    container = room.container
+    
+    if (isinstance(container, list)):
+      return container[index]
+    else:
+      return container
+     
 
   def catchItem(self, obj, index_item, item, player):
     """

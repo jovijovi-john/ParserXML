@@ -10,14 +10,7 @@
        <print>A lanterna foi ligada</print>
        <action>Atualizar lanterna para acesa</action>
      </turnon>
-   </item> 
-   <item>
-     <name>Tesoura</name>
-     <turnon>
-       <print>A lanterna foi ligada</print>
-       <action>Atualizar lanterna para acesa</action>
-     </turnon>
-   </item>  
+   </item>
    <trigger>
      <type>permanente</type>
      <command>norte</command>
@@ -36,14 +29,6 @@
  <room>
    <name>Hangar Principal</name>
    <description>Você está no meio do hangar principal da Estrela da Morte. Há uma porta trancada ao norte. Você vê um baú no meio da sala.</description>
-  <item>
-     <name>lanterna</name>
-     <writing>ao lado de um pequeno botão diz "liga para luz!"</writing>
-     <turnon>
-       <print>A lanterna foi ligada</print>
-       <action>Atualizar lanterna para acesa</action>
-     </turnon>
-   </item>  
    <container>
      <name>baú</name>
      <item>
@@ -58,6 +43,28 @@
    </container>
    <container>
      <name>bloquear</name>
+     <status>bloqueado</status>
+     <trigger>
+       <type>único</type>
+       <condition>
+         <has>sim</has>
+         <object>chave</object>
+         <owner>inventário</owner>
+       </condition>
+       <print>A fechadura cai e a porta se abre</print>
+       <action>Atualizar bloqueio para desbloqueado</action>
+     </trigger>
+     <trigger>
+       <command>norte</command>
+       <type>permanente</type>
+       <condition>
+         <status>bloqueado</status>
+       </condition>
+       <print>o cadeado precisa de uma chave!</print>
+     </trigger>
+   </container>
+    <container>
+     <name>flamengo</name>
      <status>bloqueado</status>
      <trigger>
        <type>único</type>
@@ -174,7 +181,6 @@
          <action>Adicionar escada ao TrashCompactor</action>
          <action>Excluir dianoga</action>
        </attack>
-       
        <trigger>
          <type>único</type>
          <condition>

@@ -1,7 +1,10 @@
 from XMLController import Controller
 from models.Room import Room
+from models.Container import Container
 from models.Player import Player
 from utils.intervalInputValidator import intervalInputValidator
+
+
 import os
 
 class View:
@@ -17,6 +20,9 @@ class View:
     # move
   
   def getRoomByIndex(self, index: int):
+    """
+      Retorna a {index + 1}º sala
+    """
     return self.controller.keys[index]
 
   def viewRoom(self, index: int, nameRoom: str):
@@ -25,7 +31,7 @@ class View:
         se index == -1 quer dizer que a busca vai ser apenas pelo nome. Senão, a busca vai ser pelo índice
         Ou seja, se passar um indice diferente de -1, o nameRoom não importa.
     """
-    os.system('cls||clear')
+    self.clearTerminal()
 
     if (index != -1): # buscar por índice
       nameRoom = self.getRoomByIndex(index)
@@ -33,15 +39,13 @@ class View:
     # buscar por nome
     room = self.controller.getRoom(nameRoom)
 
-    print(f"\033[1;32m{'*=*=' * 20}\033[m")
-    print(f"Você está na sala {room.name.text}".center(80))
-    print(f"\033[1;32m{'*=*=' * 20}\033[m \n")
-    
-    self.viewContainers(room)
-    self.viewItems(room)
+    self.showNameRoom(room)
+
+    self.viewContainers(room) # diz se tem container ou nao
+    self.viewItems(room) # diz se tem itens ou nao
     print("")
 
-    print(f"\033[3;33m{room.description.text}\033[m")
+    self.showDescriptionRoom(room)
 
     self.showMenuOptions(room)
 
@@ -54,7 +58,7 @@ class View:
 
     print("\nDireções: \n")
 
-    if (str(type(room.border)) == "<class 'list'>"): 
+    if (isinstance(borders, list)): 
       for border in borders:
         print(f"   -> Ao {border.direction} está a sala {border.name}. Digite {cont} para visitá-la." )
         cont += 1
@@ -63,7 +67,8 @@ class View:
 
     opt_direction = int(input("\nDigite a opção desejada: "))
 
-    if (str(type(room.border)) == "<class 'list'>"):
+    # str(type(room.border)) == "<class 'list'>"
+    if (isinstance(borders, list)):
       direction = borders[opt_direction]
     else: 
       direction = borders
@@ -85,30 +90,45 @@ class View:
     self.showOptions(options)
     option_input = intervalInputValidator(0, len(options) - 1)
 
+    # Opção de Mover
     if (option_input == 0):
-      # Opção de Mover
       self.viewDirections(room)
+
+    #Mostrar inventório
     elif (option_input == 1):
-      #Mostrar inventório
-      os.system('cls||clear')
+      self.clearTerminal()
       self.showInventory()
       thrash = input("\nDigite qualquer coisa para voltar para a sala: ")
+    
       self.viewRoom(-1, room.name.text)
-    elif (options[option_input] == "Mostrar itens"):      
-      #Mostrar itens
-      index_lastItem = self.showItems(room) - 1
+    
+    #Mostrar itens
+    elif (options[option_input] == "Mostrar itens"):  
+      self.clearTerminal()    
+      index_lastItem = self.showItems(room)
       userItemIndex = intervalInputValidator(0, index_lastItem)
       
-      item = self.controller.findItem(room, userItemIndex)
-
-      print(f"Item pego: {item}")
-
-      # Pega o item
-      self.controller.catchItem(room, userItemIndex, item, self.player)
+      # o ultimo index guarda a posição de voltar
+      if index_lastItem != userItemIndex:
+        item = self.controller.findItem(room, userItemIndex)
+        
+        # Pega o item
+        self.controller.catchItem(room, userItemIndex, item, self.player)
+        print(f"Item pego: {item}")
+        
+      # volta pra sala
       self.viewRoom(-1, room.name.text)
+
+    #Mostra os containers de uma sala
     elif (options[option_input] == "Mostrar containers"):
-      #Mostra os containers de uma sala
-      print("Containers sendo mostrados")
+      self.clearTerminal()
+      index_lastContainer = self.showContainers(room)
+      userContainerIndex = intervalInputValidator(0, index_lastContainer)
+      
+      if index_lastContainer != userContainerIndex:
+        container = self.controller.findContainer(room, userContainerIndex)
+        print(container.name.text)
+
       self.viewRoom(-1, room.name.text)
 
   def showOptions(self, options):
@@ -131,6 +151,10 @@ class View:
     else:
       print("Não tem container")      
 
+  def viewContainer(self, container: Container):
+    if (container.hasItem):
+      print("Tem item no container")
+
   def viewItems(self, room: Room):
 
     if (room.hasItem):
@@ -149,7 +173,8 @@ class View:
 
     print(string)
     print("ITENS DISPONÍVEIS: ".center(50))
-    print(string)
+    print(string + "\n")
+
 
     cont = 0
     # se tem mais de 1 item
@@ -173,8 +198,39 @@ class View:
         pass
 
       cont = 1
+    print(f"[ {cont} ] - Voltar para a sala")
 
     return cont
+
+  def showContainers(self, room: Room):
+    """
+      Mostra todos os containers de uma sala
+    """
+    string = f"\033[1;35m{'*=*=*=' * 8}\033[m"
+
+    print(string)
+    print("CONTAINERS DISPONÍVEIS: ".center(50))
+    print(string + "\n")
+
+    cont = 0
+    # se tem mais de 1 item
+    if (isinstance(room.container, list)):
+
+      for container in room.container:
+        print(f"[ {cont} ] - {container.name.text}")
+        cont += 1
+
+    else:
+      print(f"[ {cont} ] - {room.container.name.text}")
+      cont = 1
+    
+    print(f"[ {cont} ] - Voltar para a sala")
+    
+
+
+    return cont
+
+
 
   def showInventory(self):
     """
@@ -182,3 +238,23 @@ class View:
     """
     print(f"\033[1;36mItems no inventário: {self.player.inventoryNames}\033[m")
 
+  def clearTerminal(self):
+    """
+      Limpa o terminal, seja no windows ou linux
+    """
+    os.system('cls||clear')
+  
+  def showDescriptionRoom(self, room: Room):
+    """
+      Mostra a descrição da sala
+    """
+    print(f"\033[3;33m{room.description.text}\033[m")
+  
+  def showNameRoom(self, room: Room):
+    """
+      Mostra o nome da sala estilizado
+    """
+    print(f"\033[1;32m{'*=*=' * 20}\033[m")
+    print(f"Você está na sala {room.name.text}".center(80))
+    print(f"\033[1;32m{'*=*=' * 20}\033[m \n")
+    
