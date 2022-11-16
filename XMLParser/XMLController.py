@@ -201,7 +201,7 @@ class Controller:
         obj.hasItem = False
 
     except:
-      print("NÃO EXISTE ITEM NO OBJETO")
+      raise(ValueError)
 
   def verifiyTypeTrigger(self, trigger: Trigger):
     return trigger.type.text
