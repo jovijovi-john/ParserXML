@@ -2,8 +2,10 @@ from XMLController import Controller
 from models.Room import Room
 from models.Container import Container
 from models.Player import Player
+from models.Item import Item
 from utils.intervalInputValidator import intervalInputValidator
 
+from time import sleep
 
 import os
 
@@ -51,7 +53,7 @@ class View:
 
   def viewDirections(self, room: Room):
     """
-      Mostra todas as borders de uma Room
+      Mostra todas as borders de uma Room e move para a direção escolhida
     """
     borders = room.border
     cont = 0
@@ -67,14 +69,28 @@ class View:
 
     opt_direction = int(input("\nDigite a opção desejada: "))
 
-    # str(type(room.border)) == "<class 'list'>"
     if (isinstance(borders, list)):
-      direction = borders[opt_direction]
+      border_choosed = borders[opt_direction]
     else: 
-      direction = borders
+      border_choosed = borders
 
-    self.viewRoom(-1, direction.name)
+    # guardando o comando utilizado
+    self.player.command = border_choosed.direction
+
+    # verificando se tem trigger
+    if (room.hasTrigger):
+      self.clearTerminal()
+      action = self.controller.toTrigger(room.trigger, self.player)
+      
+      if action == "blocked":
+        sleep(2)
+        self.viewRoom(-1, room.name.text)
+        return
+        
+    self.viewRoom(-1, border_choosed.name)
     #return direction.name
+
+  
 
   def showMenuOptions(self, room: Room):
     """
@@ -97,11 +113,30 @@ class View:
     #Mostrar inventório
     elif (option_input == 1):
       self.clearTerminal()
-      self.showInventory()
-      thrash = input("\nDigite qualquer coisa para voltar para a sala: ")
-    
+      
+      sizeInventory = len(self.player.inventory)
+      if (sizeInventory != 0):
+        # mostra os itens do inventário
+        self.showInventory()
+        userItemIndex = intervalInputValidator(0, sizeInventory)
+        item = self.getItemOfInvetory(userItemIndex) # pega o item do inventario 
+
+
+        self.showItem(item)
+        thrash = input("\nDigite qualquer tecla para voltar: ")
+        
+        # Se for a opção de voltar
+        if (userItemIndex == sizeInventory or thrash != None):
+          self.clearTerminal()
+          print("Voltando para a sala...")
+      else:
+        print("Não há items no inventário!")
+      
+      sleep(2)
       self.viewRoom(-1, room.name.text)
-    
+
+      
+
     #Mostrar itens
     elif (options[option_input] == "Mostrar itens"):  
       self.clearTerminal()    
@@ -114,8 +149,10 @@ class View:
         
         # Pega o item
         self.controller.catchItem(room, userItemIndex, item, self.player)
-        print(f"Item pego: {item}")
-        
+        self.clearTerminal()
+        print(f"Você pegou \033[1;33m{item.name.text}\033[m!!! \nVeja no seu inventário")
+        sleep(3.5)
+
       # volta pra sala
       self.viewRoom(-1, room.name.text)
 
@@ -137,9 +174,6 @@ class View:
     for index, option in enumerate(options):
       print(f"[ {index} ] = {option} ")
     print("=========================================")
-
-
-
     
   def viewContainers(self, room: Room):
 
@@ -154,6 +188,9 @@ class View:
   def viewContainer(self, container: Container):
     if (container.hasItem):
       print("Tem item no container")
+
+  def viewTriggers(self, obj):
+    print(obj.hasTrigger)
 
   def viewItems(self, room: Room):
 
@@ -225,18 +262,18 @@ class View:
       cont = 1
     
     print(f"[ {cont} ] - Voltar para a sala")
-    
-
 
     return cont
-
-
 
   def showInventory(self):
     """
       Mostra o inventário do player
     """
-    print(f"\033[1;36mItems no inventário: {self.player.inventoryNames}\033[m")
+    print(f"\033[1;36mItems no inventário: \n\033[m")
+    for index, item in enumerate(self.player.inventoryNames):
+      print (f"[ {index} ] - {item}" ) 
+    
+    print(f"[ {index + 1} ] - Voltar")
 
   def clearTerminal(self):
     """
@@ -250,6 +287,7 @@ class View:
     """
     print(f"\033[3;33m{room.description.text}\033[m")
   
+  
   def showNameRoom(self, room: Room):
     """
       Mostra o nome da sala estilizado
@@ -257,4 +295,32 @@ class View:
     print(f"\033[1;32m{'*=*=' * 20}\033[m")
     print(f"Você está na sala {room.name.text}".center(80))
     print(f"\033[1;32m{'*=*=' * 20}\033[m \n")
+
+
+  def getItemOfInvetory(self, indexItem: int):
+    
+    item = self.player.inventory[indexItem]
+    
+    return item 
+
+
+  def showItem(self, item: Item):
+    self.clearTerminal()
+    print(f"\033[1;32mItem: {item.name.text}\033[m \n")
+    
+    try:
+      print(item.status.text)
+    except AttributeError:
+      pass
+    
+    try:
+       print(f"\033[3;33m{item.writing.text}\033[m")
+    except AttributeError:
+      pass
+
+    try:
+      #print(item.turnon.action)
+      print(item.turnon.print)
+    except AttributeError:
+      pass
     

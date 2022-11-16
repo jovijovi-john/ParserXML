@@ -2,6 +2,8 @@ from models.Border import Border
 from models.Room  import Room
 from models.Container  import Container
 from models.Item import Item
+from models.Player import Player
+from models.Trigger import Trigger
 
 class Controller:
 
@@ -22,6 +24,7 @@ class Controller:
       self.createBordersObj(room)
       self.createItemsObject(room)
       self.createContainersObj(room)
+      self.createTriggersObject(room)
     
       # Atualizando a sala com as novas informações
       map_rooms[room.name.text] = room
@@ -123,6 +126,24 @@ class Controller:
         item_obj = Item(obj.item)
         obj.item = item_obj
 
+  def createTriggersObject(self, obj):
+    self.hasTrigger(obj)
+
+    if (obj.hasTrigger):
+      triggers = obj.trigger
+
+      if (isinstance(triggers, list)):
+        triggers_objs = []
+
+        for trigger in triggers:
+          trigger_obj = Trigger(trigger)
+          triggers_objs.append(trigger_obj)
+        
+        obj.trigger = triggers_objs
+      else:
+        trigger_obj = Trigger(obj.trigger)
+        obj.trigger = trigger_obj
+
   def hasContainer(self, room):
     """
       Recebe uma room e adiciona na propriedade hasContainer um bool
@@ -135,7 +156,6 @@ class Controller:
     except AttributeError:
       room.hasContainer = False
 
-  
   def findItem(self, obj, index):
     """
       Retorna um item de um objeto a partir de um index
@@ -158,8 +178,7 @@ class Controller:
     else:
       return container
      
-
-  def catchItem(self, obj, index_item, item, player):
+  def catchItem(self, obj, index_item, item, player: Player):
     """
       Pega um item de uma sala ou de um container, remove ele de onde ele estava e coloca no inventário do usuário
 
@@ -184,3 +203,49 @@ class Controller:
     except:
       print("NÃO EXISTE ITEM NO OBJETO")
 
+  def verifiyTypeTrigger(self, trigger: Trigger):
+    return trigger.type.text
+
+  def hasTrigger(self, obj):
+    """
+      Recebe um objeto e adiciona na propriedade hasItem um bool
+
+      :param   (Room | Container | Creature)   obj  :  Local que será verificado se tem item
+    """
+    try:
+      trigger = obj.trigger
+      obj.hasTrigger = True
+    except AttributeError:
+      obj.hasTrigger = False
+    
+  def toTrigger(self, trigger: Trigger, player: Player):
+    typeTrigger = self.verifiyTypeTrigger(trigger)
+
+    if (typeTrigger == "permanente"):
+      if (player.command == trigger.command.text):
+        # has object owner
+        if (trigger.condition.has != None and trigger.condition.object != None):
+          if (trigger.condition.has == "não"):
+            if (not self.hasItemInInventory(player, trigger.condition.object)):
+              print(trigger.print.text)
+              return "blocked" 
+          else:
+            if (self.hasItemInInventory):
+              print(trigger.print.text)
+
+        # status
+        elif (trigger.condition.status != None):
+            pass
+        # status object owner 
+        elif (trigger.condition.status != None and trigger.condition.object != None):
+            pass
+        # object owner
+        elif (trigger.condition.object != None):
+            pass
+          
+  def hasItemInInventory(self, player: Player, itemName):
+    try:
+      index = player.inventoryNames.index(itemName)
+      return True
+    except ValueError:
+      return False
