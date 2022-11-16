@@ -119,16 +119,21 @@ class View:
         # mostra os itens do inventário
         self.showInventory()
         userItemIndex = intervalInputValidator(0, sizeInventory)
-        item = self.getItemOfInvetory(userItemIndex) # pega o item do inventario 
-
-
-        self.showItem(item)
-        thrash = input("\nDigite qualquer tecla para voltar: ")
-        
+       
         # Se for a opção de voltar
-        if (userItemIndex == sizeInventory or thrash != None):
+        if (userItemIndex == sizeInventory):
           self.clearTerminal()
           print("Voltando para a sala...")
+       
+        else:
+          item = self.getItemOfInvetory(userItemIndex) # pega o item do inventario 
+          self.showItem(item)
+          thrash = input("\nDigite qualquer tecla para voltar: ")
+
+          if (thrash != None):
+            self.clearTerminal()
+            print("Voltando para a sala...")
+
       else:
         print("Não há items no inventário!")
       
