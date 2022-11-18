@@ -108,7 +108,7 @@ class View:
           print("Voltando para a sala...")
        
         else:
-          item = self.getItemOfInvetory(userItemIndex) # pega o item do inventario 
+          item = self.getItemOfInvetory(userItemIndex) # atualiza o item do inventario 
           self.showItem(item)
           thrash = input("\nDigite qualquer tecla para voltar: ")
 
@@ -241,7 +241,8 @@ class View:
     if (isinstance(room.container, list)):
 
       for container in room.container:
-        print(f"[ {cont} ] - {container.name.text}")
+        name = container.name.text
+        print(f"[ {cont} ] - {name}")
         cont += 1
 
     else:
@@ -296,7 +297,12 @@ class View:
     print(f"\033[1;32mItem: {item.name.text}\033[m \n")
     
     try:
-      print(item.status.text)
+      item.status = item.status.text
+    except:
+      pass
+    
+    try:
+      print(f"status: {item.status}")
     except AttributeError:
       pass
     
@@ -306,7 +312,9 @@ class View:
       pass
 
     try:
-      #print(item.turnon.action)
+      action = item.turnon.action
+      status = action.split()[-1]
+      item.status = status
       print(item.turnon.print)
     except AttributeError:
       pass

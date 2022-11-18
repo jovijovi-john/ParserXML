@@ -86,7 +86,8 @@ class Controller:
 
         for container in containers:
           container_obj = Container(container)
-          self.createItemsObject(container_obj)
+          self.createItemsObject(container_obj) # se tiver item ele cria os itens
+          self.createTriggersObject(container_obj)
           containers_obj.append(container_obj)
         
         room.container = containers_obj
@@ -130,6 +131,12 @@ class Controller:
     self.hasTrigger(obj)
 
     if (obj.hasTrigger):
+      
+      if (isinstance(obj, Container)):
+        print("Flamengooo")
+        print(obj.name.text)
+        input("sexo:")
+      
       triggers = obj.trigger
 
       if (isinstance(triggers, list)):
@@ -247,9 +254,8 @@ class Controller:
       elif (trigger.condition.object != None):
           pass
     elif (typeTrigger == "único"):
-
+      pass
       # no final de um trigger único ele é apagado da sala/container
-      if obj.remove(trigger)
 
   def hasItemInInventory(self, player: Player, itemName):
     try:
