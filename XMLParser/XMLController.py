@@ -272,4 +272,17 @@ class Controller:
         else:
           if (self.hasItemInInventory(player, trigger.condition.object)):
             print(trigger.print.text)
-            return "sucess"
+            return "success"
+
+  def updateObj(self, obj):
+    if (obj.turnon.print != ""):
+      try:
+        action = obj.turnon.action
+        status = action.split()[-1]
+        obj.status = status
+
+        return obj.turnon.print
+      except AttributeError:
+        pass
+      
+    return ""

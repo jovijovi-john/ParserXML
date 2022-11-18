@@ -311,13 +311,8 @@ class View:
     except AttributeError:
       pass
 
-    try:
-      action = item.turnon.action
-      status = action.split()[-1]
-      item.status = status
-      print(item.turnon.print)
-    except AttributeError:
-      pass
+    print(self.controller.updateObj(item)) #printando mensagem de atualização
+    item.turnon.print = ""
     
   def moveToDirection(self, indexBorder, room):
     
@@ -343,3 +338,5 @@ class View:
         
     self.viewRoom(-1, border_choosed.name)
     #return direction.name
+
+  
