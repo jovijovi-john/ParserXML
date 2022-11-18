@@ -53,7 +53,7 @@ class View:
 
   def viewDirections(self, room: Room):
     """
-      Mostra todas as borders de uma Room e move para a direção escolhida
+      Mostra todas as borders de uma Room e retorna a quantidade de borders da sala
     """
     borders = room.border
     cont = 0
@@ -67,28 +67,7 @@ class View:
     else: 
         print(f"   -> Ao {borders.direction} está a sala {borders.name}. Digite {cont} para visitá-la." )
 
-    opt_direction = int(input("\nDigite a opção desejada: "))
-
-    if (isinstance(borders, list)):
-      border_choosed = borders[opt_direction]
-    else: 
-      border_choosed = borders
-
-    # guardando o comando utilizado
-    self.player.command = border_choosed.direction
-
-    # verificando se tem trigger
-    if (room.hasTrigger):
-      self.clearTerminal()
-      action = self.controller.toTrigger(room.trigger, self.player)
-      
-      if action == "blocked":
-        sleep(2)
-        self.viewRoom(-1, room.name.text)
-        return
-        
-    self.viewRoom(-1, border_choosed.name)
-    #return direction.name
+    return cont
 
   
 
@@ -108,7 +87,10 @@ class View:
 
     # Opção de Mover
     if (option_input == 0):
-      self.viewDirections(room)
+      qtd_directions = self.viewDirections(room)
+      opt_direction = intervalInputValidator(0, qtd_directions)
+      self.moveToDirection(opt_direction, room)
+    
 
     #Mostrar inventório
     elif (option_input == 1):
@@ -329,3 +311,27 @@ class View:
     except AttributeError:
       pass
     
+  def moveToDirection(self, indexBorder, room):
+    
+    borders = room.border
+
+    if (isinstance(borders, list)):
+      border_choosed = borders[indexBorder]
+    else: 
+      border_choosed = borders
+
+    # guardando o comando utilizado
+    self.player.command = border_choosed.direction
+
+    # verificando se tem trigger
+    if (room.hasTrigger):
+      self.clearTerminal()
+      action = self.controller.toTrigger(room, self.player)
+      
+      if action == "blocked":
+        sleep(2)
+        self.viewRoom(-1, room.name.text)
+        return
+        
+    self.viewRoom(-1, border_choosed.name)
+    #return direction.name

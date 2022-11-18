@@ -63,28 +63,7 @@
        <print>o cadeado precisa de uma chave!</print>
      </trigger>
    </container>
-    <container>
-     <name>flamengo</name>
-     <status>bloqueado</status>
-     <trigger>
-       <type>único</type>
-       <condition>
-         <has>sim</has>
-         <object>chave</object>
-         <owner>inventário</owner>
-       </condition>
-       <print>A fechadura cai e a porta se abre</print>
-       <action>Atualizar bloqueio para desbloqueado</action>
-     </trigger>
-     <trigger>
-       <command>norte</command>
-       <type>permanente</type>
-       <condition>
-         <status>bloqueado</status>
-       </condition>
-       <print>o cadeado precisa de uma chave!</print>
-     </trigger>
-   </container>
+    
    <creature>
      <name>stormtrooper</name>
      <vulnerability>sabre de luz</vulnerability>
@@ -175,7 +154,7 @@
        <attack>
          <condition>
            <object>granada</object>
-           <status>ativado</status>
+           <status>ativada</status>
          </condition>
          <print>Você matou o dianoga, e eles derrubaram uma escada para que você pudesse escapar da sala para o norte!</print>
          <action>Adicionar escada ao TrashCompactor</action>
@@ -400,7 +379,7 @@
        </condition>
        <print>Você precisa colocar a chave em escape para fugir em um pod de escape.</print>
    </trigger>
-   </container>
+   </container> 
    <border>
      <name>Sala de equipamentos</name>
      <direction>sul</direction>

@@ -204,7 +204,14 @@ class Controller:
       raise(ValueError)
 
   def verifiyTypeTrigger(self, trigger: Trigger):
-    return trigger.type.text
+    """
+      Retorna o type do trigger, caso não haja, retorna None
+    """
+    try:
+      typeTrigger = trigger.type.text
+      return typeTrigger
+    except ValueError:
+      return None
 
   def hasTrigger(self, obj):
     """
@@ -218,34 +225,45 @@ class Controller:
     except AttributeError:
       obj.hasTrigger = False
     
-  def toTrigger(self, trigger: Trigger, player: Player):
+  def toTrigger(self, obj, player: Player):
+
+    trigger = obj.trigger
     typeTrigger = self.verifiyTypeTrigger(trigger)
 
     if (typeTrigger == "permanente"):
+
       if (player.command == trigger.command.text):
         # has object owner
-        if (trigger.condition.has != None and trigger.condition.object != None):
-          if (trigger.condition.has == "não"):
-            if (not self.hasItemInInventory(player, trigger.condition.object)):
-              print(trigger.print.text)
-              return "blocked" 
-          else:
-            if (self.hasItemInInventory):
-              print(trigger.print.text)
+       if (trigger.condition.has != None and trigger.condition.object != None):
+        return self.hasObjectOwner(trigger, player)
 
-        # status
-        elif (trigger.condition.status != None):
-            pass
-        # status object owner 
-        elif (trigger.condition.status != None and trigger.condition.object != None):
-            pass
-        # object owner
-        elif (trigger.condition.object != None):
-            pass
-          
+      # status
+      elif (trigger.condition.status != None):
+          pass
+      # status object owner 
+      elif (trigger.condition.status != None and trigger.condition.object != None):
+          pass
+      # object owner
+      elif (trigger.condition.object != None):
+          pass
+    elif (typeTrigger == "único"):
+
+      # no final de um trigger único ele é apagado da sala/container
+      if obj.remove(trigger)
+
   def hasItemInInventory(self, player: Player, itemName):
     try:
       index = player.inventoryNames.index(itemName)
       return True
     except ValueError:
       return False
+
+  def hasObjectOwner(self, trigger: Trigger, player: Player):
+      if (trigger.condition.has == "não"):
+        if (not self.hasItemInInventory(player, trigger.condition.object)):
+          print(trigger.print.text)
+          return "blocked" 
+        else:
+          if (self.hasItemInInventory(player, trigger.condition.object)):
+            print(trigger.print.text)
+            return "sucess"
