@@ -47,13 +47,16 @@ class View:
     self.viewItems(room) # diz se tem itens ou nao
     self.viewCreatures(room) # diz se tem criaturas ou nao
 
-    if (room.hasCreature):
-      self.showCreatures(room)
+    
+    print("")
+    self.showDescriptionRoom(room)
     print("")
 
-    self.showDescriptionRoom(room)
+    creature = None
+    if (room.hasCreature):
+      creature = self.showCreatures(room)
 
-    self.showMenuOptions(room)
+    self.showMenuOptions(room, creature)
 
   def viewDirections(self, room: Room):
     """
@@ -75,7 +78,7 @@ class View:
 
   
 
-  def showMenuOptions(self, room: Room):
+  def showMenuOptions(self, room: Room, creature):
     """
       Mostr todas as opções de ação disponíveis para uma sala 
     """
@@ -85,6 +88,8 @@ class View:
       options.append("Mostrar itens")
     if (room.hasBaus):
       options.append("Mostrar containers")
+    if (creature != None):
+      options.append("Atacar")
 
     self.showOptions(options)
     option_input = intervalInputValidator(0, len(options) - 1)
@@ -126,8 +131,6 @@ class View:
       sleep(2)
       self.viewRoom(-1, room.name.text)
 
-      
-
     #Mostrar itens
     elif (options[option_input] == "Mostrar itens"):  
       self.clearTerminal()    
@@ -142,7 +145,7 @@ class View:
         self.controller.catchItem(room, userItemIndex, item, self.player)
         self.clearTerminal()
         print(f"Você pegou \033[1;33m{item.name.text}\033[m!!! \nVeja no seu inventário")
-        sleep(3.5)
+        sleep(2.5)
 
       # volta pra sala
       self.viewRoom(-1, room.name.text)
@@ -165,11 +168,31 @@ class View:
           self.controller.catchItem(container, userItemIndex, item, self.player)
           self.clearTerminal()
           print(f"Você pegou \033[1;33m{item.name.text}\033[m!!! \nVeja no seu inventário")
-          sleep(3.5)
+          sleep(2.5)
 
 
       self.viewRoom(-1, room.name.text)
+    elif (options[option_input] == "Atacar"):
+      resultado = self.controller.attackCreature(self.player, creature)
+      if resultado == "venceu":
+        self.clearTerminal()
+        print(f"\033[1;33m{creature.attack.print.text}\033[m")
+        
+        self.controller.removeCreature(room, creature)
+        sleep(2)
+        
+        # voltando para a sala
+        self.viewRoom(-1, room.name.text)
+      else:
+        self.clearTerminal()
+        print(f"\033[1;31m{'=|=|=' * 21 }")
+        print (f"{'GAME OVER ' * 11}\n")
 
+        print(resultado)
+        print(f"{creature.name.text} matou você\n")
+
+        print (f"{'GAME OVER ' * 11}")
+        print(f"\033[1;31m{'=|=|=' * 21 }\033[m\n")
 
   def showOptions(self, options):
     print("\nEscolha uma opção: \n")
@@ -398,11 +421,13 @@ class View:
         for container in room.container:
           # verificando se o container atual tem trigger
           if container.hasTrigger:
+           
             # iterando sobre cada trigger:
             if (isinstance(container.trigger, list)):
               for trigger in container.trigger:
-                
-                isblocked = self.verifyBlocked(trigger, self.player, room)
+
+                isblocked = self.verifyBlocked(trigger, self.player, room, nextRoom=border_choosed.name, container=container)
+
                 if isblocked:
                   return
 
@@ -410,16 +435,22 @@ class View:
     # move para a sala referente
     self.viewRoom(-1, border_choosed.name)
 
-  def verifyBlocked(self, obj, player: Player, room: Room ):
+  def verifyBlocked(self, obj, player: Player, room: Room, **kwargs):
     self.clearTerminal()
     action = self.controller.toTrigger(obj, player)
                   
-    if action == "blocked":
+    if action != None:
         print(obj.print.text)
         sleep(2)
 
         # continua na mesma sala
-        self.viewRoom(-1, room.name.text)
+        if action != "success":
+          self.viewRoom(-1, room.name.text)
+        else:
+          # removendo container de bloqueio
+          self.controller.removeContainer(room, kwargs["container"])
+          self.viewRoom(-1, kwargs["nextRoom"])
+        
         return True
 
   def showCreatures(self, room: Room):
@@ -427,5 +458,22 @@ class View:
     creatures = room.creature
 
     if (isinstance(creatures, list)):
+
       for creature in creatures:
         print(creature.name.text)
+        isblocked = self.controller.toTrigger(creature.trigger, self.player, room)
+        if isblocked:
+          return
+    else: 
+      creature = room.creature
+      retorno = self.controller.toTrigger(creature.trigger, self.player)
+      if retorno == "success":
+        print(f"\033[1;31m{'=|=|=' * 20 }\n")
+        print(f"{creature.trigger.print.text}\n")
+        print(f"{' ' * 5}Criatura: {creature.name.text}")
+        print(f"{' ' * 5}Fraqueza: {creature.vulnerability.text}\n")
+        print(f"\033[1;31m{'=|=|=' * 20 }\033[m")
+
+        return creature
+
+  

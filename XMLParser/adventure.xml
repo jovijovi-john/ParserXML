@@ -40,15 +40,7 @@
            <action>Atualize o sabre de luz para aceso</action>
          </turnon>
      </item>
-      <item>
-         <name>sabre de luz 2</name>
-         <writing>ligue para ativar o sabre de luz</writing>
-         <status>inativo</status>
-         <turnon>
-           <print>Seu sabre de luz está aceso</print>
-           <action>Atualize o sabre de luz para aceso</action>
-         </turnon>
-     </item>
+     
    </container>
 
    <container>
@@ -76,56 +68,6 @@
     
    <creature>
      <name>stormtrooper</name>
-     <vulnerability>sabre de luz</vulnerability>
-     <attack>
-       <condition>
-         <object>sabre de luz</object>
-         <status>ativado</status>
-       </condition>
-       <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
-       <action>Adicionar chave ao hangar principal</action>
-       <action>Excluir stormtrooper</action>
-     </attack>
-     <trigger>
-       <type>único</type>
-       <condition>
-         <object>lanterna</object>
-         <status>ativado</status>
-         <owner>inventário</owner>
-       </condition>
-       <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
-     </trigger>
-     <item>
-       <name>chave</name>
-     </item>
-   </creature>
-    <creature>
-     <name>stormtrooper</name>
-     <vulnerability>sabre de luz</vulnerability>
-     <attack>
-       <condition>
-         <object>sabre de luz</object>
-         <status>ativado</status>
-       </condition>
-       <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
-       <action>Adicionar chave ao hangar principal</action>
-       <action>Excluir stormtrooper</action>
-     </attack>
-     <trigger>
-       <type>único</type>
-       <condition>
-         <object>lanterna</object>
-         <status>ativado</status>
-         <owner>inventário</owner>
-       </condition>
-       <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
-     </trigger>
-     <item>
-       <name>chave</name>
-     </item>
-   </creature>
-    <creature>
-     <name>Prova de EDO</name>
      <vulnerability>sabre de luz</vulnerability>
      <attack>
        <condition>
