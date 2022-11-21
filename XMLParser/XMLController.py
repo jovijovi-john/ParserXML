@@ -141,12 +141,7 @@ class Controller:
     self.hasTrigger(obj)
 
     if (obj.hasTrigger):
-      
-      if (isinstance(obj, Container)):
-        print("Flamengooo")
-        print(obj.name.text)
-        input("sexo:")
-      
+
       triggers = obj.trigger
 
       if (isinstance(triggers, list)):
@@ -154,6 +149,7 @@ class Controller:
 
         for trigger in triggers:
           trigger_obj = Trigger(trigger)
+          trigger_obj.pai = obj # referenciando quem é o pai do trigger
           triggers_objs.append(trigger_obj)
         
         obj.trigger = triggers_objs
@@ -266,29 +262,56 @@ class Controller:
       obj.hasTrigger = False
     
   def toTrigger(self, obj, player: Player):
+    
+    if isinstance(obj, Trigger):
+      trigger = obj
+    else:
+      trigger = obj.trigger
 
-    trigger = obj.trigger
+
     typeTrigger = self.verifiyTypeTrigger(trigger)
 
     if (typeTrigger == "permanente"):
+      # Trigger que bloqueia ou não movimentação entre salas
 
+      # Como já sabemos que refere-se à movimentação devemos verificar 
+      # se a direção escolhida é a mesma que está bloqueada
       if (player.command == trigger.command.text):
-        # has object owner
-       if (trigger.condition.has != None and trigger.condition.object != None):
-        return self.hasObjectOwner(trigger, player)
-
-      # status
-      elif (trigger.condition.status != None):
-          pass
-      # status object owner 
-      elif (trigger.condition.status != None and trigger.condition.object != None):
-          pass
-      # object owner
-      elif (trigger.condition.object != None):
-          pass
+        try:
+          # has object owner
+          if (trigger.condition.has != None and trigger.condition.object != None):
+            return self.triggerHasObjectOwner(trigger, player)
+        except AttributeError:
+          try:
+             # status
+            if (trigger.condition.status != None):
+              # se a condição é apenas status então quer dizer que o trigger está dentro de um container
+              return self.triggerStatus(trigger, player)
+          except AttributeError:
+            try:
+              # status object owner 
+              if (trigger.condition.status != None and trigger.condition.object != None):
+                  pass
+            except AttributeError:
+              try:
+                # object owner
+                if (trigger.condition.object != None):
+                    pass
+              except:
+                pass
     elif (typeTrigger == "único"):
+
       pass
-      # no final de um trigger único ele é apagado da sala/container
+          # no final de um trigger único ele é apagado da sala/container
+      
+  def triggerStatus(self, trigger: Trigger, player: Player):
+    statusPai = trigger.pai.status.text
+    statusTrigger = trigger.condition.status
+
+    if statusPai == statusTrigger:
+      return "blocked"
+
+
 
   def hasItemInInventory(self, player: Player, itemName):
     try:
@@ -297,14 +320,12 @@ class Controller:
     except ValueError:
       return False
 
-  def hasObjectOwner(self, trigger: Trigger, player: Player):
+  def triggerHasObjectOwner(self, trigger: Trigger, player: Player):
       if (trigger.condition.has == "não"):
         if (not self.hasItemInInventory(player, trigger.condition.object)):
-          print(trigger.print.text)
           return "blocked" 
         else:
           if (self.hasItemInInventory(player, trigger.condition.object)):
-            print(trigger.print.text)
             return "success"
 
   def updateObj(self, obj):

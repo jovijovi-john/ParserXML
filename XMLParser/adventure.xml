@@ -51,18 +51,6 @@
      </item>
    </container>
 
-    <container>
-     <name>baú de sabre</name>
-     <item>
-         <name>sabre de luz</name>
-         <writing>ligue para ativar o sabre de luz</writing>
-         <status>inativo</status>
-         <turnon>
-           <print>Seu sabre de luz está aceso</print>
-           <action>Atualize o sabre de luz para aceso</action>
-         </turnon>
-     </item>
-   </container>
    <container>
      <name>bloquear</name>
      <status>bloqueado</status>
@@ -268,15 +256,16 @@
            <print>O leitor de cartões tem o cartão agora, você pode continuar!</print>
            <action>Atualizar leitor de cartão para abrir</action>
        </trigger>
-     </container>
-     <trigger>
-       <command>norte</command>
-       <type>permanente</type>
-       <condition>
-         <status>fechado</status>
-       </condition>
-       <print>o leitor de cartões precisa que o cartão do Tarkin seja aberto!</print>
+      <trigger>
+        <command>norte</command>
+        <type>permanente</type>
+        <condition>
+          <status>fechado</status>
+        </condition>
+        <print>o leitor de cartões precisa que o cartão do Tarkin seja aberto!</print>
      </trigger>
+     </container>
+
      <border>
        <name>Sala de equipamentos</name>
        <direction>norte</direction>
@@ -400,7 +389,7 @@
          <status>fechado</status>
        </condition>
        <print>Você precisa colocar a chave em escape para fugir em um pod de escape.</print>
-   </trigger>
+      </trigger>
    </container> 
    <border>
      <name>Sala de equipamentos</name>

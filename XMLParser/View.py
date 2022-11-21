@@ -148,9 +148,9 @@ class View:
       self.clearTerminal()
       index_lastContainer = self.showContainersWithItems(room)
       userContainerIndex = intervalInputValidator(0, index_lastContainer)
-      container = self.controller.findContainerWithItem(room, userContainerIndex)
 
       if index_lastContainer != userContainerIndex:
+        container = self.controller.findContainerWithItem(room, userContainerIndex)
         index_lastItem = self.showItems(container)
         userItemIndex = intervalInputValidator(0, index_lastItem)
         
@@ -374,16 +374,37 @@ class View:
 
     # verificando se tem trigger
     if (room.hasTrigger):
-      self.clearTerminal()
-      action = self.controller.toTrigger(room, self.player)
-      
-      if action == "blocked":
+      isblocked = self.verifyBlocked(room.trigger, self.player, room)
+      if isblocked:
+        return
+    
+    # verificando se na sala tem container
+    if (room.hasContainer):
+      # verificando se tem mais de um container na sala
+      if (isinstance(room.container, list)):
+        for container in room.container:
+          # verificando se o container atual tem trigger
+          if container.hasTrigger:
+            # iterando sobre cada trigger:
+            if (isinstance(container.trigger, list)):
+              for trigger in container.trigger:
+                
+                isblocked = self.verifyBlocked(trigger, self.player, room)
+                if isblocked:
+                  return
+
+    
+    # move para a sala referente
+    self.viewRoom(-1, border_choosed.name)
+
+  def verifyBlocked(self, obj, player: Player, room: Room ):
+    self.clearTerminal()
+    action = self.controller.toTrigger(obj, player)
+                  
+    if action == "blocked":
+        print(obj.print.text)
         sleep(2)
 
         # continua na mesma sala
         self.viewRoom(-1, room.name.text)
-        return
-
-    # move para a sala referente
-    self.viewRoom(-1, border_choosed.name)
-  
+        return True
