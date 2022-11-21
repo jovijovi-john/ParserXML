@@ -45,6 +45,10 @@ class View:
 
     self.viewContainers(room) # diz se tem container ou nao
     self.viewItems(room) # diz se tem itens ou nao
+    self.viewCreatures(room) # diz se tem criaturas ou nao
+
+    if (room.hasCreature):
+      self.showCreatures(room)
     print("")
 
     self.showDescriptionRoom(room)
@@ -200,6 +204,15 @@ class View:
         print(f"Tem 1 item")
     else:
       print("Não tem items")
+
+  def viewCreatures(self, room: Room):
+    if (room.hasCreature):
+      if (isinstance(room.creature, list)):
+        print(f"Tem {len(room.creature)} criaturas")
+      else: 
+        print(f"Tem 1 criatura")
+    else:
+      print("Não tem criaturas")
 
   def showItems(self, obj):
     """
@@ -408,3 +421,11 @@ class View:
         # continua na mesma sala
         self.viewRoom(-1, room.name.text)
         return True
+
+  def showCreatures(self, room: Room):
+
+    creatures = room.creature
+
+    if (isinstance(creatures, list)):
+      for creature in creatures:
+        print(creature.name.text)

@@ -2,6 +2,7 @@ from models.Border import Border
 from models.Room  import Room
 from models.Container  import Container
 from models.Item import Item
+from models.Creature import Creature
 from models.Player import Player
 from models.Trigger import Trigger
 
@@ -25,6 +26,7 @@ class Controller:
       self.createItemsObject(room)
       self.createContainersObj(room)
       self.createTriggersObject(room)
+      self.createCreaturesObject(room)
       self.hasBaus(room)
     
       # Atualizando a sala com as novas informações
@@ -90,12 +92,9 @@ class Controller:
           container_obj = Container(container)
           self.createItemsObject(container_obj) # se tiver item ele cria os itens
 
-          print(container_obj.name.text)
-          input(container_obj.hasItem)
           if container_obj.hasItem:
             room.baus.append(container_obj)
             print(container_obj.name.text)
-          print(room.baus)
 
           self.createTriggersObject(container_obj)
           containers_obj.append(container_obj)
@@ -117,6 +116,18 @@ class Controller:
       obj.hasItem = True
     except AttributeError:
       obj.hasItem = False
+  
+  def hasCreature(self, room: Room):
+    """
+      Recebe uma sala adiciona na propriedade hasCreature um bool
+
+      :param   (Room )   room  :  sala que será verificado se tem criatura
+    """
+    try:
+      creature = room.creature
+      room.hasCreature = True
+    except AttributeError:
+      room.hasCreature = False
   
   def createItemsObject(self, obj):
 
@@ -156,6 +167,28 @@ class Controller:
       else:
         trigger_obj = Trigger(obj.trigger)
         obj.trigger = trigger_obj
+
+  def createCreaturesObject(self, room: Room):
+    
+    self.hasCreature(room)
+
+    if (room.hasCreature):        
+      creatures = room.creature
+      
+      if (isinstance(creatures, list)):
+        creatures_obj = []
+
+        for creature in creatures:
+          creature_obj = Creature(creature)
+          self.createItemsObject(creature_obj) # se tiver item ele cria os itens
+          self.createTriggersObject(creature_obj) # criando os triggers
+
+          creatures_obj.append(creature_obj)
+        
+        room.creature = creatures_obj
+      else:
+        creature_obj = Creature(room.creature)
+        room.creature = creature_obj
 
   def hasBaus(self, room):
     """
@@ -310,8 +343,6 @@ class Controller:
 
     if statusPai == statusTrigger:
       return "blocked"
-
-
 
   def hasItemInInventory(self, player: Player, itemName):
     try:

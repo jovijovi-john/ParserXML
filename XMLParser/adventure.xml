@@ -99,6 +99,56 @@
        <name>chave</name>
      </item>
    </creature>
+    <creature>
+     <name>stormtrooper</name>
+     <vulnerability>sabre de luz</vulnerability>
+     <attack>
+       <condition>
+         <object>sabre de luz</object>
+         <status>ativado</status>
+       </condition>
+       <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
+       <action>Adicionar chave ao hangar principal</action>
+       <action>Excluir stormtrooper</action>
+     </attack>
+     <trigger>
+       <type>único</type>
+       <condition>
+         <object>lanterna</object>
+         <status>ativado</status>
+         <owner>inventário</owner>
+       </condition>
+       <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
+     </trigger>
+     <item>
+       <name>chave</name>
+     </item>
+   </creature>
+    <creature>
+     <name>Prova de EDO</name>
+     <vulnerability>sabre de luz</vulnerability>
+     <attack>
+       <condition>
+         <object>sabre de luz</object>
+         <status>ativado</status>
+       </condition>
+       <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
+       <action>Adicionar chave ao hangar principal</action>
+       <action>Excluir stormtrooper</action>
+     </attack>
+     <trigger>
+       <type>único</type>
+       <condition>
+         <object>lanterna</object>
+         <status>ativado</status>
+         <owner>inventário</owner>
+       </condition>
+       <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
+     </trigger>
+     <item>
+       <name>chave</name>
+     </item>
+   </creature>
    <border>
      <name>Entrada</name>
      <direction>sul</direction>
@@ -362,7 +412,6 @@
            <object>sabre de luz</object>
            <owner>inventário</owner>
          </condition>
-          
      </trigger>
      <item>
        <name>chave</name>
