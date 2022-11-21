@@ -40,6 +40,28 @@
            <action>Atualize o sabre de luz para aceso</action>
          </turnon>
      </item>
+      <item>
+         <name>sabre de luz 2</name>
+         <writing>ligue para ativar o sabre de luz</writing>
+         <status>inativo</status>
+         <turnon>
+           <print>Seu sabre de luz está aceso</print>
+           <action>Atualize o sabre de luz para aceso</action>
+         </turnon>
+     </item>
+   </container>
+
+    <container>
+     <name>baú de sabre</name>
+     <item>
+         <name>sabre de luz</name>
+         <writing>ligue para ativar o sabre de luz</writing>
+         <status>inativo</status>
+         <turnon>
+           <print>Seu sabre de luz está aceso</print>
+           <action>Atualize o sabre de luz para aceso</action>
+         </turnon>
+     </item>
    </container>
    <container>
      <name>bloquear</name>

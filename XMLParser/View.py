@@ -79,7 +79,7 @@ class View:
 
     if (room.hasItem):
       options.append("Mostrar itens")
-    if (room.hasContainer):
+    if (room.hasBaus):
       options.append("Mostrar containers")
 
     self.showOptions(options)
@@ -143,17 +143,29 @@ class View:
       # volta pra sala
       self.viewRoom(-1, room.name.text)
 
-    #Mostra os containers de uma sala
+    #Mostra os containers(que tem itens) de uma sala
     elif (options[option_input] == "Mostrar containers"):
       self.clearTerminal()
-      index_lastContainer = self.showContainers(room)
+      index_lastContainer = self.showContainersWithItems(room)
       userContainerIndex = intervalInputValidator(0, index_lastContainer)
-      
+      container = self.controller.findContainerWithItem(room, userContainerIndex)
+
       if index_lastContainer != userContainerIndex:
-        container = self.controller.findContainer(room, userContainerIndex)
-        print(container.name.text)
+        index_lastItem = self.showItems(container)
+        userItemIndex = intervalInputValidator(0, index_lastItem)
+        
+        if index_lastItem != userItemIndex:
+          item = self.controller.findItem(container, userItemIndex)
+          
+          # Pega o item
+          self.controller.catchItem(container, userItemIndex, item, self.player)
+          self.clearTerminal()
+          print(f"Você pegou \033[1;33m{item.name.text}\033[m!!! \nVeja no seu inventário")
+          sleep(3.5)
+
 
       self.viewRoom(-1, room.name.text)
+
 
   def showOptions(self, options):
     print("\nEscolha uma opção: \n")
@@ -202,26 +214,28 @@ class View:
 
     cont = 0
     # se tem mais de 1 item
-    if (isinstance(obj.item, list)):
+    if obj.hasItem:
+      if (isinstance(obj.item, list)):
+        
+        print(f"item: {obj.item}")
+        for item in obj.item:
+          print(f"[ {cont} ] - {item.name.text}")
 
-      for item in obj.item:
-        print(f"[ {cont} ] - {item.name.text}")
+          try:
+            print(f"\033[3;30m{' ' * 7} {item.writing.text}\033[m")
+          except:
+            pass
 
+          cont += 1
+
+      else:
+        print(f"[ {cont} ] - {obj.item.name.text}")
         try:
-          print(f"\033[3;30m{' ' * 7} {item.writing.text}\033[m")
+          print(f"\033[3;30m{' ' * 7} {obj.item.writing.text}\033[m")
         except:
           pass
 
-        cont += 1
-
-    else:
-      print(f"[ {cont} ] - {obj.item.name.text}")
-      try:
-        print(f"\033[3;30m{' ' * 7} {obj.item.writing.text}\033[m")
-      except:
-        pass
-
-      cont = 1
+        cont = 1
     print(f"[ {cont} ] - Voltar para a sala")
 
     return cont
@@ -248,6 +262,26 @@ class View:
     else:
       print(f"[ {cont} ] - {room.container.name.text}")
       cont = 1
+    
+    print(f"[ {cont} ] - Voltar para a sala")
+
+    return cont
+  
+  def showContainersWithItems(self, room: Room):
+    """
+      Mostra todos os containers de uma sala
+    """
+    string = f"\033[1;35m{'*=*=*=' * 8}\033[m"
+
+    print(string)
+    print("CONTAINERS DISPONÍVEIS: ".center(50))
+    print(string + "\n")
+
+    cont = 0
+    for container in room.baus:
+      name = container.name.text
+      print(f"[ {cont} ] - {name}")
+      cont += 1
     
     print(f"[ {cont} ] - Voltar para a sala")
 
@@ -293,28 +327,40 @@ class View:
 
 
   def showItem(self, item: Item):
+    """
+      Mostra um item e atualiza seu status
+    """
     self.clearTerminal()
     print(f"\033[1;32mItem: {item.name.text}\033[m \n")
     
+    # Padronizando status do objeto
     try:
       item.status = item.status.text
     except:
       pass
     
+    # Mostrando os status do item se existir
     try:
       print(f"status: {item.status}")
     except AttributeError:
       pass
     
+    # Mostrando a descrição do item
     try:
        print(f"\033[3;33m{item.writing.text}\033[m")
     except AttributeError:
       pass
 
-    print(self.controller.updateObj(item)) #printando mensagem de atualização
-    item.turnon.print = ""
+    #Mostrando  mensagem de atualização
+    print(self.controller.updateObj(item)) 
+
+    #confirmando que o print não aparecerá na proxima vez que escolher o item
+    self.controller.updateStatusObj(item) 
     
   def moveToDirection(self, indexBorder, room):
+    """
+      Move o usuário para a sala correspondente à borda
+    """
     
     borders = room.border
 
@@ -333,10 +379,11 @@ class View:
       
       if action == "blocked":
         sleep(2)
+
+        # continua na mesma sala
         self.viewRoom(-1, room.name.text)
         return
-        
-    self.viewRoom(-1, border_choosed.name)
-    #return direction.name
 
+    # move para a sala referente
+    self.viewRoom(-1, border_choosed.name)
   

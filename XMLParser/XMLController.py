@@ -25,6 +25,7 @@ class Controller:
       self.createItemsObject(room)
       self.createContainersObj(room)
       self.createTriggersObject(room)
+      self.hasBaus(room)
     
       # Atualizando a sala com as novas informações
       map_rooms[room.name.text] = room
@@ -74,7 +75,8 @@ class Controller:
 
       :param Room room : Sala que terá os containers trasnformados em objetos
     """
-
+    
+    room.baus = []
     self.hasContainer(room)
 
     # Se existe containers na sala
@@ -87,6 +89,14 @@ class Controller:
         for container in containers:
           container_obj = Container(container)
           self.createItemsObject(container_obj) # se tiver item ele cria os itens
+
+          print(container_obj.name.text)
+          input(container_obj.hasItem)
+          if container_obj.hasItem:
+            room.baus.append(container_obj)
+            print(container_obj.name.text)
+          print(room.baus)
+
           self.createTriggersObject(container_obj)
           containers_obj.append(container_obj)
         
@@ -151,6 +161,24 @@ class Controller:
         trigger_obj = Trigger(obj.trigger)
         obj.trigger = trigger_obj
 
+  def hasBaus(self, room):
+    """
+      Recebe uma room e adiciona na propriedade hasBaus um bool
+
+      :param   Room   room  :  Sala que será verificada
+    """
+    try: 
+      containers = room.baus
+
+      if containers != []:
+        room.hasBaus = True
+      else:
+        print(containers)
+        print(containers != [])
+        room.hasBaus = False
+    except AttributeError:
+      room.hasBaus = False
+
   def hasContainer(self, room):
     """
       Recebe uma room e adiciona na propriedade hasContainer um bool
@@ -185,6 +213,11 @@ class Controller:
     else:
       return container
      
+  def findContainerWithItem(self, room, index):
+    containers = room.baus
+    
+    return containers[index]
+
   def catchItem(self, obj, index_item, item, player: Player):
     """
       Pega um item de uma sala ou de um container, remove ele de onde ele estava e coloca no inventário do usuário
@@ -284,5 +317,8 @@ class Controller:
         return obj.turnon.print
       except AttributeError:
         pass
-      
+
     return ""
+    
+  def updateStatusObj(self, obj):
+    obj.turnon.print = ""
