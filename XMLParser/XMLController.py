@@ -1,6 +1,6 @@
 from models.Border import Border
-from models.Room  import Room
-from models.Container  import Container
+from models.Room import Room
+from models.Container import Container
 from models.Item import Item
 from models.Creature import Creature
 from models.Player import Player
@@ -21,14 +21,17 @@ class Controller:
     map_rooms = {}
 
     for room in rooms:
-      
+
+      room.creatureAlive = False
+
       self.createBordersObj(room)
       self.createItemsObject(room)
       self.createContainersObj(room)
       self.createTriggersObject(room)
       self.createCreaturesObject(room)
+
       self.hasBaus(room)
-    
+
       # Atualizando a sala com as novas informações
       map_rooms[room.name.text] = room
     return map_rooms
@@ -57,14 +60,14 @@ class Controller:
 
     # Verificando se o objeto border da Sala contém mais de uma borda
     if (str(type(room.border)) == "<class 'list'>"):
-      borders = room.border #array
+      borders = room.border  #array
       borders_obj = []
-      
+
       # Convertendo todas as bordas para um objeto Border
       for border in borders:
         border_obj = Border(border)
         borders_obj.append(border_obj)
-      
+
       room.border = borders_obj
     else:
       # Convertendo a borda para um Objeto border
@@ -77,7 +80,7 @@ class Controller:
 
       :param Room room : Sala que terá os containers trasnformados em objetos
     """
-    
+
     room.baus = []
     self.hasContainer(room)
 
@@ -85,23 +88,23 @@ class Controller:
     if (room.hasContainer == True):
       # Se existe só um container na sala
       if (isinstance(room.container, list)):
-        containers = room.container #array
+        containers = room.container  #array
         containers_obj = []
 
         for container in containers:
           container_obj = Container(container)
-          self.createItemsObject(container_obj) # se tiver item ele cria os itens
+          self.createItemsObject(
+            container_obj)  # se tiver item ele cria os itens
 
           if container_obj.hasItem:
             room.baus.append(container_obj)
-            print(container_obj.name.text)
 
           self.createTriggersObject(container_obj)
           containers_obj.append(container_obj)
-        
+
         room.container = containers_obj
       else:
-        container_obj = Container(room.container) 
+        container_obj = Container(room.container)
         self.createItemsObject(container_obj)
         room.container = container_obj
 
@@ -116,7 +119,7 @@ class Controller:
       obj.hasItem = True
     except AttributeError:
       obj.hasItem = False
-  
+
   def hasCreature(self, room: Room):
     """
       Recebe uma sala adiciona na propriedade hasCreature um bool
@@ -128,21 +131,21 @@ class Controller:
       room.hasCreature = True
     except AttributeError:
       room.hasCreature = False
-  
+
   def createItemsObject(self, obj):
 
     self.hasItem(obj)
 
-    if (obj.hasItem):        
+    if (obj.hasItem):
       items = obj.item
-      
+
       if (isinstance(items, list)):
         items_obj = []
 
         for item in items:
           item_obj = Item(item)
           items_obj.append(item_obj)
-        
+
         obj.item = items_obj
       else:
         item_obj = Item(obj.item)
@@ -160,36 +163,36 @@ class Controller:
 
         for trigger in triggers:
           trigger_obj = Trigger(trigger)
-          trigger_obj.pai = obj # referenciando quem é o pai do trigger
+          trigger_obj.pai = obj  # referenciando quem é o pai do trigger
           triggers_objs.append(trigger_obj)
-        
+
         obj.trigger = triggers_objs
       else:
         trigger_obj = Trigger(obj.trigger)
         obj.trigger = trigger_obj
 
   def createCreaturesObject(self, room: Room):
-    
+
     self.hasCreature(room)
 
-    if (room.hasCreature):        
+    if (room.hasCreature):
       creatures = room.creature
-      
+
       if (isinstance(creatures, list)):
         creatures_obj = []
 
         for creature in creatures:
           creature_obj = Creature(creature)
-          self.createItemsObject(creature_obj) # se tiver item ele cria os itens
-          self.createTriggersObject(creature_obj) # criando os triggers
+          self.createItemsObject(creature_obj)  # se tiver item ele cria os itens
+          self.createTriggersObject(creature_obj)  # criando os triggers
 
           creatures_obj.append(creature_obj)
-        
+
         room.creature = creatures_obj
       else:
         creature_obj = Creature(room.creature)
-        self.createItemsObject(creature_obj) # se tiver item ele cria os itens
-        self.createTriggersObject(creature_obj) # criando os triggers
+        self.createItemsObject(creature_obj)  # se tiver item ele cria os itens
+        self.createTriggersObject(creature_obj)  # criando os triggers
         room.creature = creature_obj
 
   def hasBaus(self, room):
@@ -198,14 +201,12 @@ class Controller:
 
       :param   Room   room  :  Sala que será verificada
     """
-    try: 
+    try:
       containers = room.baus
 
       if containers != []:
         room.hasBaus = True
       else:
-        print(containers)
-        print(containers != [])
         room.hasBaus = False
     except AttributeError:
       room.hasBaus = False
@@ -235,18 +236,31 @@ class Controller:
       return item[index]
     else:
       return item
-  
+
   def findContainer(self, room, index):
+    """
+      Retorna um container de uma sala
+
+      :param   Room   room  : Sala que será retirado o container
+      :param   int    index : Identificador do container a ser apagado
+    """
     container = room.container
-    
+
     if (isinstance(container, list)):
       return container[index]
     else:
       return container
-     
+
   def findContainerWithItem(self, room, index):
+    """
+      Retorna todos os containers com itens
+      
+      :param   Room   room  : Sala que será retirado o container
+      :param   int    index : Identificador do container a ser apagado
+      
+    """
     containers = room.baus
-    
+
     return containers[index]
 
   def catchItem(self, obj, index_item, item, player: Player):
@@ -271,7 +285,7 @@ class Controller:
         obj.hasItem = False
 
     except:
-      raise(ValueError)
+      raise (ValueError)
 
   def verifiyTypeTrigger(self, trigger: Trigger):
     """
@@ -294,63 +308,80 @@ class Controller:
       obj.hasTrigger = True
     except AttributeError:
       obj.hasTrigger = False
-    
+
   def toTrigger(self, obj, player: Player):
-    
+    """
+      Aciona um trigger de um objeto ou apenas aciona um trigger
+
+      param: (Room | container | Creature | Trigger)   obj     :  Objeto que terá um trigger acionado
+      param: Player                                    player  :  Player
+    """
+
     if isinstance(obj, Trigger):
       trigger = obj
     else:
       trigger = obj.trigger
-
 
     typeTrigger = self.verifiyTypeTrigger(trigger)
 
     if (typeTrigger == "permanente"):
       # Trigger que bloqueia ou não movimentação entre salas
 
-      # Como já sabemos que refere-se à movimentação devemos verificar 
+      # Como já sabemos que refere-se à movimentação devemos verificar
       # se a direção escolhida é a mesma que está bloqueada
       if (player.command == trigger.command.text):
         try:
           # has object owner
-          if (trigger.condition.has != None and trigger.condition.object != None):
+          if (trigger.condition.has != None
+              and trigger.condition.object != None):
             return self.triggerHasObjectOwner(trigger, player)
         except AttributeError:
           try:
-             # status
+            # status
             if (trigger.condition.status != None):
               # se a condição é apenas status então quer dizer que o trigger está dentro de um container
               return self.triggerStatus(trigger, player)
-          
-           
+
           except AttributeError:
             try:
               # object owner
               if (trigger.condition.object != None):
-                  pass
+                
+                item = self.findItemInInventory(player, trigger.condition.object)
+                if item != None:
+                  return "success"
+                pass
             except:
               pass
+              
     elif (typeTrigger == "único"):
       try:
-        # status object owner 
-        if (trigger.condition.status != None and trigger.condition.object != None):
+        # status object owner
+        if (trigger.condition.status != None
+            and trigger.condition.object != None):
           itemTrigger = trigger.condition.object
           itemPlayer = self.findItemInInventory(player, itemTrigger)
 
+          try:
+            itemPlayer.status = itemPlayer.status.text
+          except:
+            pass
+
           if itemPlayer.status == trigger.condition.status:
             return "success"
-              
+
           # if trigger.condition.status == itemPlayer.status:
       except AttributeError:
 
         try:
           # has(sim) object owner
-          if (trigger.condition.has != None and trigger.condition.object != None):
+          if (trigger.condition.has != None
+              and trigger.condition.object != None):
             return self.triggerHasObjectOwner(trigger, player)
-        except: 
+        except:
           print("probleminhas")
           # no final de um trigger único ele é apagado da sala/container
-      
+
   def triggerStatus(self, trigger: Trigger, player: Player):
     statusPai = trigger.pai.status.text
     statusTrigger = trigger.condition.status
@@ -361,18 +392,18 @@ class Controller:
       return None
 
   def triggerStatusObject(self, trigger: Trigger, player: Player):
-      itemTrigger = trigger.condition.object
-      itemPlayer = self.findItemInInventory(player, itemTrigger)
+    itemTrigger = trigger.condition.object
+    itemPlayer = self.findItemInInventory(player, itemTrigger)
 
-      try:
-        statusItem = itemPlayer.status
-      except:
-        statusItem = ""
-      
-      if statusItem == itemTrigger.status:
-        return "success"
-      
-      return None
+    try:
+      statusItem = itemPlayer.status
+    except:
+      statusItem = ""
+
+    if statusItem == itemTrigger.status:
+      return "success"
+
+    return None
 
   def hasItemInInventory(self, player: Player, itemName):
     try:
@@ -394,14 +425,14 @@ class Controller:
     return item
 
   def triggerHasObjectOwner(self, trigger: Trigger, player: Player):
-      if (trigger.condition.has == "não"):
-        if (not self.hasItemInInventory(player, trigger.condition.object)):
-          return "blocked" 
-      else:
-        if (self.hasItemInInventory(player, trigger.condition.object)):
-          return "success"
-      
-      return None
+    if (trigger.condition.has == "não"):
+      if (not self.hasItemInInventory(player, trigger.condition.object)):
+        return "blocked"
+    else:
+      if (self.hasItemInInventory(player, trigger.condition.object)):
+        return "success"
+
+    return None
 
   def updateObj(self, obj):
     if (obj.turnon.print != ""):
@@ -415,14 +446,20 @@ class Controller:
         pass
 
     return ""
-  
+
   def attackCreature(self, player: Player, creature: Creature):
+    """
+      ataca uma criatura
+
+      :param Player   player   : Jogador que atacará a criatura
+      :param Creature creature : Criatura que será atacada
+    """
 
     condition = creature.attack.condition
     item = self.findItemInInventory(player, condition.object)
 
     # object status
-    
+
     if item == None:
       return f"Não há {condition.object} no inventário"
 
@@ -440,18 +477,21 @@ class Controller:
       return "venceu"
     else:
       return f"{item.name.text} desativado"
-   
+
     # object
     try:
       print()
     except:
       pass
-  
+
   def removeCreature(self, room: Room, creature: Creature):
-    
+    """
+      Remove uma criatura de uma sala
+    """
+
     # verificando se a sala tem mais de uma criatura
     creatures = room.creature
-    
+
     if (isinstance(creatures, list)):
       for index, creatureRoom in enumerate(creatures):
         if creatureRoom == creature:
@@ -464,10 +504,10 @@ class Controller:
       room.hasCreature = False
 
   def removeContainer(self, room: Room, container: Container):
-    
+
     # verificando se a sala tem mais de uma criatura
     containers = room.container
-    
+
     if (isinstance(containers, list)):
       for index, containerRoom in enumerate(containers):
         if containerRoom == container:
@@ -479,12 +519,12 @@ class Controller:
     else:
       room.container = []
       room.hasContainer = False
-  
+
   def removeTrigger(self, container: Container, trigger: Trigger):
-    
+
     # verificando se a sala tem mais de uma criatura
     triggers = container.trigger
-    
+
     if (isinstance(triggers, list)):
       for index, triggerContainer in enumerate(triggers):
         if triggerContainer == trigger:
@@ -496,6 +536,6 @@ class Controller:
     else:
       container.trigger = []
       container.hasTrigger = False
-  
+
   def updateStatusObj(self, obj):
     obj.turnon.print = ""

@@ -1,253 +1,253 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <map>
- <room>
-   <name>Entrada</name>
-   <description>Você se encontra a bordo da Estrela da Morte! Há uma sala ao norte. Há muito pouca luz na entrada, mas felizmente para você há uma lanterna caída no chão.</description>
-   <item>
-     <name>lanterna</name>
-     <writing>ao lado de um pequeno botão diz "liga para luz!"</writing>
-     <turnon>
-       <print>A lanterna foi ligada</print>
-       <action>Atualizar lanterna para acesa</action>
-     </turnon>
-   </item>
-   <trigger>
-     <type>permanente</type>
-     <command>norte</command>
-     <condition>
-       <has>não</has>
-       <object>lanterna</object>
-       <owner>inventário</owner>
-     </condition>
-     <print>* tropeçar * preciso de alguma luz ...</print>
-   </trigger>
-   <border>
-     <name>Hangar Principal</name>
-     <direction>norte</direction>
-   </border>
- </room>
- <room>
-   <name>Hangar Principal</name>
-   <description>Você está no meio do hangar principal da Estrela da Morte. Há uma porta trancada ao norte. Você vê um baú no meio da sala.</description>
-   <container>
-     <name>baú</name>
-     <item>
-         <name>sabre de luz</name>
-         <writing>ligue para ativar o sabre de luz</writing>
-         <status>inativo</status>
-         <turnon>
-           <print>Seu sabre de luz está aceso</print>
-           <action>Atualize o sabre de luz para aceso</action>
-         </turnon>
-     </item>
-     
-   </container>
+  <room>
+    <name>Entrada</name>
+    <description>Você se encontra a bordo da Estrela da Morte! Há uma sala ao norte. Há muito pouca luz na entrada, mas felizmente para você há uma lanterna caída no chão.</description>
+    <item>
+      <name>lanterna</name>
+      <writing>ao lado de um pequeno botão diz "liga para luz!"</writing>
+      <turnon>
+        <print>A lanterna foi ligada</print>
+        <action>Atualizar lanterna para acesa</action>
+      </turnon>
+    </item>
+    <trigger>
+      <type>permanente</type>
+      <command>norte</command>
+      <condition>
+        <has>não</has>
+        <object>lanterna</object>
+        <owner>inventário</owner>
+      </condition>
+      <print>* tropeçar * preciso de alguma luz ...</print>
+    </trigger>
+    <border>
+      <name>Hangar Principal</name>
+      <direction>norte</direction>
+    </border>
+  </room>
+  <room>
+    <name>Hangar Principal</name>
+    <description>Você está no meio do hangar principal da Estrela da Morte. Há uma porta trancada ao norte. Você vê um baú no meio da sala.</description>
+    <container>
+      <name>baú</name>
+      <item>
+        <name>sabre de luz</name>
+        <writing>ligue para ativar o sabre de luz</writing>
+        <status>inativo</status>
+        <turnon>
+          <print>Seu sabre de luz está aceso</print>
+          <action>Atualize o sabre de luz para aceso</action>
+        </turnon>
+      </item>
 
-   <container>
-     <name>bloquear</name>
-     <status>bloqueado</status>
-     <trigger>
-       <type>único</type>
-       <condition>
-         <has>sim</has>
-         <object>chave</object>
-         <owner>inventário</owner>
-       </condition>
-       <print>A fechadura cai e a porta se abre</print>
-       <action>Atualizar bloqueio para desbloqueado</action>
-     </trigger>
-     <trigger>
-       <command>norte</command>
-       <type>permanente</type>
-       <condition>
-         <status>bloqueado</status>
-       </condition>
-       <print>o cadeado precisa de uma chave!</print>
-     </trigger>
-   </container>
-    
-   <creature>
-     <name>stormtrooper</name>
-     <vulnerability>sabre de luz</vulnerability>
-     <attack>
-       <condition>
-         <object>sabre de luz</object>
-         <status>ativado</status>
-       </condition>
-       <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
-       <action>Adicionar chave ao hangar principal</action>
-       <action>Excluir stormtrooper</action>
-     </attack>
-     <trigger>
-       <type>único</type>
-       <condition>
-         <object>lanterna</object>
-         <status>ativado</status>
-         <owner>inventário</owner>
-       </condition>
-       <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
-     </trigger>
-     <item>
-       <name>chave</name>
-     </item>
-   </creature>
-   <border>
-     <name>Entrada</name>
-     <direction>sul</direction>
-   </border>
-   <border>
-     <name>Sala do gerador</name>
-     <direction>norte</direction>
-   </border>
- </room>
- <room>
-   <name>Sala do gerador</name>
-   <description>Você se encontra no gerador principal da Estrela da Morte. Você vê que há um baú na sala.</description>
-   <container>
-     <name>baú</name>
-     <item>
-       <name>jammer</name>
-       <status>Inativo</status>
-       <writing>Coloque-me no gerador para travar e desligar a energia!</writing>
-       <turnon>
-           <print>O jammer foi ligado</print>
-           <action>Atualize o jammer para on</action>
-       </turnon>
-     </item>
-     <item>
-       <name>granada</name>
-       <status>inativo</status>
-       <writing>Me ligue para explodir!</writing>
-       <turnon>
-           <print>A granada foi ativada! Não se exploda!</print>
-           <action>Atualizar granada para ativada</action>
-       </turnon>
-     </item>
-   </container>
-   <container>
-     <name>gerador</name>
-     <status>em</status>
-     <trigger>
-       <type>único</type>
-       <condition>
-         <has>sim</has>
-         <object>jammer</object>
-         <owner>inventário</owner>
-       </condition>
-       <print>O gerador foi desativado com sucesso!</print>
-       <action>Atualizar gerador para desligado</action>
-     </trigger>
-   </container>
-   <border>
-     <name>Compactador de lixo</name>
-     <direction>leste</direction>
-   </border>
-   <border>
-     <name>Hangar Principal</name>
-     <direction>sul</direction>
-   </border>
- </room>
- <room>
-     <name>Compactador de lixo</name>
-     <description>Oh não! Você se encontra no compactador de lixo da Estrela da Morte.</description>
-     <creature>
-       <name>dianoga</name>
-       <vulnerability>granada</vulnerability>
-       <attack>
-         <condition>
-           <object>granada</object>
-           <status>ativada</status>
-         </condition>
-         <print>Você matou o dianoga, e eles derrubaram uma escada para que você pudesse escapar da sala para o norte!</print>
-         <action>Adicionar escada ao TrashCompactor</action>
-         <action>Excluir dianoga</action>
-       </attack>
-       <trigger>
-         <type>único</type>
-         <condition>
-           <status>inativo</status>
-           <object>granada</object>
-           <owner>inventário</owner>
-         </condition>
-         <print>Você vê uma dianoga de aparência ameaçadora no compactador de lixo. Felizmente para você, você ainda tem a granada em seu inventário.</print>
-       </trigger>
-       <item>
-         <name>escada</name>
-       </item>
-   </creature>
-   <trigger>
-         <type>permanente</type>
-         <command>norte</command>
-         <condition>
-           <has>não</has>
-           <object>escada</object>
-           <owner>inventário</owner>
-         </condition>
-         <print>Você precisa da escada para escapar!</print>
-   </trigger>
-   <border>
-     <name>Sala do gerador</name>
-     <direction>oeste</direction>
-   </border>
-   <border>
-     <name>Corredor principal</name>
-     <direction>norte</direction>
-   </border>
- </room>
- <room>
-   <name>Corredor principal</name>
-   <description>Você encontrou o corredor principal para a estrela da morte. Mais adiante no corredor, a oeste, você vê a sala de conferências principal.</description>
-   <border>
-     <name>Sala de conferências</name>
-     <direction>oeste</direction>
-   </border>
-   <border>
-     <name>Compactador de lixo</name>
-     <direction>sul</direction>
-   </border>
- </room>
- <room>
-     <name>Sala de conferências</name>
-     <description>Você se encontra na sala de conferências principal da Estrela da Morte!</description>
-     <creature>
-       <name>Tarkin</name>
-       <vulnerability>sabre de luz</vulnerability>
-       <attack>
-         <condition>
-           <object>sabre de luz</object>
-           <status>ativado</status>
-         </condition>
-         <print>Você matou Tarkin! Ele deixou cair um cartão que permite que você prossiga para o norte.</print>
-         <action>Adicionar cartão à sala de conferências</action>
-         <action>Excluir Tarkin</action>
-       </attack>
-       <trigger>
-         <type>único</type>
-         <condition>
-           <status>ativado</status>
-           <object>sabre de luz</object>
-           <owner>inventário</owner>
-         </condition>
-         <print>Você vê Tarkin na sala de conferências! Felizmente para você, você ainda tem a forma de sabre de luz anterior.</print>
-       </trigger>
-       <item>
-         <name>cartão</name>
-         <writing>Coloque-me no leitor de cartões para prosseguir para o norte</writing>
-       </item>
-     </creature>
-     <container>
-       <status>fechado</status>
-       <name>leitor de cartões</name>
-       <trigger>
-           <type>único</type>
-           <condition>
-             <has>sim</has>
-             <object>cartão</object>
-             <owner>leitor de cartões</owner>
-           </condition>
-           <print>O leitor de cartões tem o cartão agora, você pode continuar!</print>
-           <action>Atualizar leitor de cartão para abrir</action>
-       </trigger>
+    </container>
+
+    <container>
+      <name>bloquear</name>
+      <status>bloqueado</status>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <has>sim</has>
+          <object>chave</object>
+          <owner>inventário</owner>
+        </condition>
+        <print>A fechadura cai e a porta se abre</print>
+        <action>Atualizar bloqueio para desbloqueado</action>
+      </trigger>
+      <trigger>
+        <command>norte</command>
+        <type>permanente</type>
+        <condition>
+          <status>bloqueado</status>
+        </condition>
+        <print>o cadeado precisa de uma chave!</print>
+      </trigger>
+    </container>
+
+    <creature>
+      <name>stormtrooper</name>
+      <vulnerability>sabre de luz</vulnerability>
+      <attack>
+        <condition>
+          <object>sabre de luz</object>
+          <status>ativado</status>
+        </condition>
+        <print>Você matou o Stormtrooper e eles deixaram cair uma chave na sala!</print>
+        <action>Adicionar chave ao hangar principal</action>
+        <action>Excluir stormtrooper</action>
+      </attack>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <object>lanterna</object>
+          <status>ativado</status>
+          <owner>inventário</owner>
+        </condition>
+        <print>Você vê um stormtrooper no meio da sala. Ele caminha em sua direção ameaçadoramente.</print>
+      </trigger>
+      <item>
+        <name>chave</name>
+      </item>
+    </creature>
+    <border>
+      <name>Entrada</name>
+      <direction>sul</direction>
+    </border>
+    <border>
+      <name>Sala do gerador</name>
+      <direction>norte</direction>
+    </border>
+  </room>
+  <room>
+    <name>Sala do gerador</name>
+    <description>Você se encontra no gerador principal da Estrela da Morte. Você vê que há um baú na sala.</description>
+    <container>
+      <name>baú</name>
+      <item>
+        <name>jammer</name>
+        <status>Inativo</status>
+        <writing>Coloque-me no gerador para travar e desligar a energia!</writing>
+        <turnon>
+          <print>O jammer foi ligado</print>
+          <action>Atualize o jammer para on</action>
+        </turnon>
+      </item>
+      <item>
+        <name>granada</name>
+        <status>inativo</status>
+        <writing>Me ligue para explodir!</writing>
+        <turnon>
+          <print>A granada foi ativada! Não se exploda!</print>
+          <action>Atualizar granada para ativada</action>
+        </turnon>
+      </item>
+    </container>
+    <container>
+      <name>gerador</name>
+      <status>em</status>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <has>sim</has>
+          <object>jammer</object>
+          <owner>inventário</owner>
+        </condition>
+        <print>O gerador foi desativado com sucesso!</print>
+        <action>Atualizar gerador para desligado</action>
+      </trigger>
+    </container>
+    <border>
+      <name>Compactador de lixo</name>
+      <direction>leste</direction>
+    </border>
+    <border>
+      <name>Hangar Principal</name>
+      <direction>sul</direction>
+    </border>
+  </room>
+  <room>
+    <name>Compactador de lixo</name>
+    <description>Oh não! Você se encontra no compactador de lixo da Estrela da Morte.</description>
+    <creature>
+      <name>dianoga</name>
+      <vulnerability>granada</vulnerability>
+      <attack>
+        <condition>
+          <object>granada</object>
+          <status>ativado</status>
+        </condition>
+        <print>Você matou o dianoga, e eles derrubaram uma escada para que você pudesse escapar da sala para o norte!</print>
+        <action>Adicionar escada ao TrashCompactor</action>
+        <action>Excluir dianoga</action>
+      </attack>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <status>inativo</status>
+          <object>granada</object>
+          <owner>inventário</owner>
+        </condition>
+        <print>Você vê uma dianoga de aparência ameaçadora no compactador de lixo. Felizmente para você, você ainda tem a granada em seu inventário.</print>
+      </trigger>
+      <item>
+        <name>escada</name>
+      </item>
+    </creature>
+    <trigger>
+      <type>permanente</type>
+      <command>norte</command>
+      <condition>
+        <has>não</has>
+        <object>escada</object>
+        <owner>inventário</owner>
+      </condition>
+      <print>Você precisa da escada para escapar!</print>
+    </trigger>
+    <border>
+      <name>Sala do gerador</name>
+      <direction>oeste</direction>
+    </border>
+    <border>
+      <name>Corredor principal</name>
+      <direction>norte</direction>
+    </border>
+  </room>
+  <room>
+    <name>Corredor principal</name>
+    <description>Você encontrou o corredor principal para a estrela da morte. Mais adiante no corredor, a oeste, você vê a sala de conferências principal.</description>
+    <border>
+      <name>Sala de conferências</name>
+      <direction>oeste</direction>
+    </border>
+    <border>
+      <name>Compactador de lixo</name>
+      <direction>sul</direction>
+    </border>
+  </room>
+  <room>
+    <name>Sala de conferências</name>
+    <description>Você se encontra na sala de conferências principal da Estrela da Morte!</description>
+    <creature>
+      <name>Tarkin</name>
+      <vulnerability>sabre de luz</vulnerability>
+      <attack>
+        <condition>
+          <object>sabre de luz</object>
+          <status>ativado</status>
+        </condition>
+        <print>Você matou Tarkin! Ele deixou cair um cartão que permite que você prossiga para o norte.</print>
+        <action>Adicionar cartão à sala de conferências</action>
+        <action>Excluir Tarkin</action>
+      </attack>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <status>ativado</status>
+          <object>sabre de luz</object>
+          <owner>inventário</owner>
+        </condition>
+        <print>Você vê Tarkin na sala de conferências! Felizmente para você, você ainda tem a forma de sabre de luz anterior.</print>
+      </trigger>
+      <item>
+        <name>cartão</name>
+        <writing>Coloque-me no leitor de cartões para prosseguir para o norte</writing>
+      </item>
+    </creature>
+    <container>
+      <status>fechado</status>
+      <name>leitor de cartões</name>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <has>sim</has>
+          <object>cartão</object>
+          <owner>leitor de cartões</owner>
+        </condition>
+        <print>O leitor de cartões tem o cartão agora, você pode continuar!</print>
+        <action>Atualizar leitor de cartão para abrir</action>
+      </trigger>
       <trigger>
         <command>norte</command>
         <type>permanente</type>
@@ -255,149 +255,149 @@
           <status>fechado</status>
         </condition>
         <print>o leitor de cartões precisa que o cartão do Tarkin seja aberto!</print>
-     </trigger>
-     </container>
-
-     <border>
-       <name>Sala de equipamentos</name>
-       <direction>norte</direction>
-     </border>
-     <border>
-       <name>Corredor principal</name>
-       <direction>leste</direction>
-     </border>
- </room>
- <room>
-   <name>Sala de equipamentos</name>
-   <description>Você está na sala de equipamentos principal! Você vê que há um guarda-roupa e um baú no centro da sala. Você vê que a sala do Imperador está localizada ao norte. Você pode querer pegar alguns dos itens aqui antes de continuar.</description>
-   <container>
-     <name>guarda-roupa</name>
-     <item>
-       <name>fantasia</name>
-       <writing>Esta é uma roupa de Stormtrooper! Você pode precisar dele para continuar</writing>
-     </item>
-   </container>
-   <container>
-     <name>baú</name>
-     <item>
-       <name>blaster</name>
-       <writing>Isso pode ser útil ao lidar com os guardas do imperador</writing>
-     </item>
-   </container>
-   <border>
-     <name>A sala do imperador</name>
-     <direction>norte</direction>
-   </border>
-   <border>
-     <name>Sala de conferências</name>
-     <direction>sul</direction>
-   </border>
-   <border>
-     <name>Refeitório</name>
-     <direction>leste</direction>
-   </border>
- </room>
-<room>
-   <name>Refeitório</name>
-   <description>Você se encontra no refeitório a bordo do Death Star. Talvez você queira levar um pouco de comida para mais tarde? (experimente "comida aberta")</description>
-   <container>
-     <name>comida</name>
-     <item>
-       <name>leite</name>
-       <writing>Aproveite este leite</writing>
-     </item>
-     <item>
-       <name>cookie</name>
-       <writing>Aproveite este cookie</writing>
-     </item>
-   </container>
-   <border>
-     <name>Sala de equipamentos</name>
-     <direction>oeste</direction>
-   </border>
- </room>
- <room>
-   <name>A sala do imperador</name>
-   <description>Você se encontra na sala do imperador.</description>
-   <creature>
-     <name>guarda</name>
-     <trigger>
-       <type>único</type>
-       <condition>
-           <object>blaster</object>
-           <owner>inventário</owner>
-       </condition>
-       <print>Você deve lutar contra o guarda antes do Imperador!</print>
-     </trigger>
-     <attack>
-         <condition>
-           <object>blaster</object>
-         </condition>
-         <print>Você matou o guarda do imperador! Você agora está em batalha com o Imperador! Tente usar seu sabre de luz</print>
-       <action>Excluir guarda</action>
-     </attack>
-   </creature>
-   <creature>
-     <name>Imperador</name>
-     <attack>
-         <condition>
-           <object>sabre de luz</object>
-           <status>ativado</status>
-         </condition>
-         <print>Você matou o Imperador. Ele deixou cair uma chave com a qual você pode escapar da Estrela da Morte em uma cápsula de fuga!</print>
-         <action>Excluir imperador</action>
-     </attack>
-     <trigger>
-         <type>único</type>
-         <condition>
-           <status>ativado</status>
-           <object>sabre de luz</object>
-           <owner>inventário</owner>
-         </condition>
-     </trigger>
-     <item>
-       <name>chave</name>
-       <writing>Coloque-me em "escape" para ativar um pod de escape e sair</writing>
-     </item>
-   </creature>
-   <container>
-       <status>fechado</status>
-       <name>escape</name>
-       <trigger>
-           <type>único</type>
-           <condition>
-             <has>sim</has>
-             <object>chave</object>
-             <owner>escape</owner>
-           </condition>
-           <print>O pod de escape agora está aberto! Você pode escapar da Estrela da Morte seguindo para o norte</print>
-           <action>Atualizar escape para abrir</action>
-     </trigger>
-     <trigger>
-       <command>norte</command>
-       <type>permanente</type>
-       <condition>
-         <status>fechado</status>
-       </condition>
-       <print>Você precisa colocar a chave em escape para fugir em um pod de escape.</print>
       </trigger>
-   </container> 
-   <border>
-     <name>Sala de equipamentos</name>
-     <direction>sul</direction>
-   </border>
-   <border>
-     <name>Escape pod</name>
-     <direction>norte</direction>
-   </border>
- </room>
- <room>
-   <type>sair</type>
-   <name>Escape pod</name>
-   <description>Você conseguiu sair em um pod de fuga!</description>
-   <border>
-     <name>A sala do imperador</name>
-     <direction>sul</direction>
-   </border>
- </room>
+    </container>
+
+    <border>
+      <name>Sala de equipamentos</name>
+      <direction>norte</direction>
+    </border>
+    <border>
+      <name>Corredor principal</name>
+      <direction>leste</direction>
+    </border>
+  </room>
+  <room>
+    <name>Sala de equipamentos</name>
+    <description>Você está na sala de equipamentos principal! Você vê que há um guarda-roupa e um baú no centro da sala. Você vê que a sala do Imperador está localizada ao norte. Você pode querer pegar alguns dos itens aqui antes de continuar.</description>
+    <container>
+      <name>guarda-roupa</name>
+      <item>
+        <name>fantasia</name>
+        <writing>Esta é uma roupa de Stormtrooper! Você pode precisar dele para continuar</writing>
+      </item>
+    </container>
+    <container>
+      <name>baú</name>
+      <item>
+        <name>blaster</name>
+        <writing>Isso pode ser útil ao lidar com os guardas do imperador</writing>
+      </item>
+    </container>
+    <border>
+      <name>A sala do imperador</name>
+      <direction>norte</direction>
+    </border>
+    <border>
+      <name>Sala de conferências</name>
+      <direction>sul</direction>
+    </border>
+    <border>
+      <name>Refeitório</name>
+      <direction>leste</direction>
+    </border>
+  </room>
+  <room>
+    <name>Refeitório</name>
+    <description>Você se encontra no refeitório a bordo do Death Star. Talvez você queira levar um pouco de comida para mais tarde? (experimente "comida aberta")</description>
+    <container>
+      <name>comida</name>
+      <item>
+        <name>leite</name>
+        <writing>Aproveite este leite</writing>
+      </item>
+      <item>
+        <name>cookie</name>
+        <writing>Aproveite este cookie</writing>
+      </item>
+    </container>
+    <border>
+      <name>Sala de equipamentos</name>
+      <direction>oeste</direction>
+    </border>
+  </room>
+  <room>
+    <name>A sala do imperador</name>
+    <description>Você se encontra na sala do imperador.</description>
+    <creature>
+      <name>guarda</name>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <object>blaster</object>
+          <owner>inventário</owner>
+        </condition>
+        <print>Você deve lutar contra o guarda antes do Imperador!</print>
+      </trigger>
+      <attack>
+        <condition>
+          <object>blaster</object>
+        </condition>
+        <print>Você matou o guarda do imperador! Você agora está em batalha com o Imperador! Tente usar seu sabre de luz</print>
+        <action>Excluir guarda</action>
+      </attack>
+    </creature>
+    <creature>
+      <name>Imperador</name>
+      <attack>
+        <condition>
+          <object>sabre de luz</object>
+          <status>ativado</status>
+        </condition>
+        <print>Você matou o Imperador. Ele deixou cair uma chave com a qual você pode escapar da Estrela da Morte em uma cápsula de fuga!</print>
+        <action>Excluir imperador</action>
+      </attack>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <status>ativado</status>
+          <object>sabre de luz</object>
+          <owner>inventário</owner>
+        </condition>
+      </trigger>
+      <item>
+        <name>chave</name>
+        <writing>Coloque-me em "escape" para ativar um pod de escape e sair</writing>
+      </item>
+    </creature>
+    <container>
+      <status>fechado</status>
+      <name>escape</name>
+      <trigger>
+        <type>único</type>
+        <condition>
+          <has>sim</has>
+          <object>chave</object>
+          <owner>escape</owner>
+        </condition>
+        <print>O pod de escape agora está aberto! Você pode escapar da Estrela da Morte seguindo para o norte</print>
+        <action>Atualizar escape para abrir</action>
+      </trigger>
+      <trigger>
+        <command>norte</command>
+        <type>permanente</type>
+        <condition>
+          <status>fechado</status>
+        </condition>
+        <print>Você precisa colocar a chave em escape para fugir em um pod de escape.</print>
+      </trigger>
+    </container>
+    <border>
+      <name>Sala de equipamentos</name>
+      <direction>sul</direction>
+    </border>
+    <border>
+      <name>Escape pod</name>
+      <direction>norte</direction>
+    </border>
+  </room>
+  <room>
+    <type>sair</type>
+    <name>Escape pod</name>
+    <description>Você conseguiu sair em um pod de fuga!</description>
+    <border>
+      <name>A sala do imperador</name>
+      <direction>sul</direction>
+    </border>
+  </room>
 </map>

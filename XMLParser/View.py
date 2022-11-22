@@ -27,7 +27,7 @@ class View:
     """
     return self.controller.keys[index]
 
-  def viewRoom(self, index: int, nameRoom: str):
+  def viewRoom(self, index: int, nameRoom: str, **kwargs):
     """
       Busca uma sala:
         se index == -1 quer dizer que a busca vai ser apenas pelo nome. Senão, a busca vai ser pelo índice
@@ -42,19 +42,21 @@ class View:
     room = self.controller.getRoom(nameRoom)
 
     self.showNameRoom(room)
-
-    self.viewContainers(room) # diz se tem container ou nao
-    self.viewItems(room) # diz se tem itens ou nao
-    self.viewCreatures(room) # diz se tem criaturas ou nao
-
     
     print("")
     self.showDescriptionRoom(room)
     print("")
 
-    creature = None
+
+    try:
+      permanent = kwargs["permanent"]
+    except KeyError:
+      permanent = False
+
     if (room.hasCreature):
-      creature = self.showCreatures(room)
+      creature = self.showCreatures(room, permanent)
+    else:
+      creature = None
 
     self.showMenuOptions(room, creature)
 
@@ -75,8 +77,6 @@ class View:
         print(f"   -> Ao {borders.direction} está a sala {borders.name}. Digite {cont} para visitá-la." )
 
     return cont
-
-  
 
   def showMenuOptions(self, room: Room, creature):
     """
@@ -129,7 +129,12 @@ class View:
         print("Não há items no inventário!")
       
       sleep(2)
-      self.viewRoom(-1, room.name.text)
+      if room.creatureAlive:
+        self.viewRoom(-1, room.name.text, permanent=True)
+      else:
+        self.viewRoom(-1, room.name.text)
+
+        
 
     #Mostrar itens
     elif (options[option_input] == "Mostrar itens"):  
@@ -147,8 +152,12 @@ class View:
         print(f"Você pegou \033[1;33m{item.name.text}\033[m!!! \nVeja no seu inventário")
         sleep(2.5)
 
-      # volta pra sala
-      self.viewRoom(-1, room.name.text)
+      # volta pra sala      
+      if room.creatureAlive:
+        self.viewRoom(-1, room.name.text, permanent=True)
+      else:
+        self.viewRoom(-1, room.name.text)
+
 
     #Mostra os containers(que tem itens) de uma sala
     elif (options[option_input] == "Mostrar containers"):
@@ -170,13 +179,16 @@ class View:
           print(f"Você pegou \033[1;33m{item.name.text}\033[m!!! \nVeja no seu inventário")
           sleep(2.5)
 
+      if room.creatureAlive:
+        self.viewRoom(-1, room.name.text, permanent=True)
+      else:
+        self.viewRoom(-1, room.name.text)
 
-      self.viewRoom(-1, room.name.text)
     elif (options[option_input] == "Atacar"):
       resultado = self.controller.attackCreature(self.player, creature)
       if resultado == "venceu":
         self.clearTerminal()
-        print(f"\033[1;33m{creature.attack.print.text}\033[m")
+        print(f"\033[1;32m{creature.attack.print.text}\033[m")
         
         self.controller.removeCreature(room, creature)
         sleep(2)
@@ -200,42 +212,6 @@ class View:
     for index, option in enumerate(options):
       print(f"[ {index} ] = {option} ")
     print("=========================================")
-    
-  def viewContainers(self, room: Room):
-
-    if (room.hasContainer):
-      if(isinstance(room.container, list)):
-        print(f"Tem {len(room.container)} containers")
-      else:
-        print(f"Tem 1 container")
-    else:
-      print("Não tem container")      
-
-  def viewContainer(self, container: Container):
-    if (container.hasItem):
-      print("Tem item no container")
-
-  def viewTriggers(self, obj):
-    print(obj.hasTrigger)
-
-  def viewItems(self, room: Room):
-
-    if (room.hasItem):
-      if (isinstance(room.item, list)):
-        print(f"Tem {len(room.item)} items")
-      else: 
-        print(f"Tem 1 item")
-    else:
-      print("Não tem items")
-
-  def viewCreatures(self, room: Room):
-    if (room.hasCreature):
-      if (isinstance(room.creature, list)):
-        print(f"Tem {len(room.creature)} criaturas")
-      else: 
-        print(f"Tem 1 criatura")
-    else:
-      print("Não tem criaturas")
 
   def showItems(self, obj):
     """
@@ -247,13 +223,11 @@ class View:
     print("ITENS DISPONÍVEIS: ".center(50))
     print(string + "\n")
 
-
     cont = 0
     # se tem mais de 1 item
     if obj.hasItem:
       if (isinstance(obj.item, list)):
         
-        print(f"item: {obj.item}")
         for item in obj.item:
           print(f"[ {cont} ] - {item.name.text}")
 
@@ -345,7 +319,6 @@ class View:
     """
     print(f"\033[3;33m{room.description.text}\033[m")
   
-  
   def showNameRoom(self, room: Room):
     """
       Mostra o nome da sala estilizado
@@ -354,13 +327,11 @@ class View:
     print(f"Você está na sala {room.name.text}".center(80))
     print(f"\033[1;32m{'*=*=' * 20}\033[m \n")
 
-
   def getItemOfInvetory(self, indexItem: int):
     
     item = self.player.inventory[indexItem]
     
     return item 
-
 
   def showItem(self, item: Item):
     """
@@ -430,12 +401,16 @@ class View:
 
                 if isblocked:
                   return
-
     
     # move para a sala referente
     self.viewRoom(-1, border_choosed.name)
 
   def verifyBlocked(self, obj, player: Player, room: Room, **kwargs):
+
+    """
+      Ativa triggers para o
+    """
+
     self.clearTerminal()
     action = self.controller.toTrigger(obj, player)
                   
@@ -453,7 +428,7 @@ class View:
         
         return True
 
-  def showCreatures(self, room: Room):
+  def showCreatures(self, room: Room, permanent: bool):
 
     creatures = room.creature
 
@@ -462,18 +437,21 @@ class View:
       for creature in creatures:
         print(creature.name.text)
         isblocked = self.controller.toTrigger(creature.trigger, self.player, room)
-        if isblocked:
+        if isblocked and not permanent:
           return
     else: 
       creature = room.creature
       retorno = self.controller.toTrigger(creature.trigger, self.player)
-      if retorno == "success":
+
+      if retorno == "success" or permanent:
         print(f"\033[1;31m{'=|=|=' * 20 }\n")
         print(f"{creature.trigger.print.text}\n")
         print(f"{' ' * 5}Criatura: {creature.name.text}")
         print(f"{' ' * 5}Fraqueza: {creature.vulnerability.text}\n")
         print(f"\033[1;31m{'=|=|=' * 20 }\033[m")
 
-        return creature
+        room.creatureAlive = True
+
+      return creature
 
   
